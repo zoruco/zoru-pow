@@ -1,0 +1,33 @@
+[profile.default]
+src = "src"
+test = "test"
+out = "out"
+libs = ["../node_modules"]
+remappings = ["@openzeppelin/contracts/=../node_modules/@openzeppelin/contracts/", "zoru-evmnet/=vendor/evmnet/"]
+solc_version = "0.8.38"
+evm_version = "shanghai"
+chain_id = 6736
+optimizer = true
+optimizer_runs = 200
+via_ir = false
+bytecode_hash = "none"
+cbor_metadata = false
+fs_permissions = [{ access = "read-write", path = "./deployments" }]
+# Local test-call budget for the bounded 20K-proof/claim accounting fixture.
+# This is not a VEX block limit or any change to mainnet gas/price parameters.
+gas_limit = 6000000000
+
+[fuzz]
+runs = 1024
+
+[invariant]
+runs = 128
+depth = 64
+fail_on_revert = true
+
+# Exportable runtime probes MUST contain ordinary EVM creation code, not
+# Foundry's dynamic test-linking cheatcode stubs.
+[profile.runtime]
+dynamic_test_linking = false
+out = "out-runtime"
+cache_path = "cache-runtime"

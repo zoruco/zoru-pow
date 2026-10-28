@@ -1,0 +1,10 @@
+/.local/
+/node_modules/
+/contracts/out*/
+/contracts/cache*/
+/contracts/broadcast/
+**/__pycache__/
+/evidence/
+
+# Operational receipt logs belong outside source control.
+/mainnet-*.log

@@ -1,0 +1,65 @@
+{
+  "storage": [
+    {
+      "astId": 348,
+      "contract": "src/ZoruDrandBeacon.sol:ZoruDrandBeacon",
+      "label": "cachedSeed",
+      "offset": 0,
+      "slot": "0",
+      "type": "t_mapping(t_uint48,t_bytes32)"
+    },
+    {
+      "astId": 350,
+      "contract": "src/ZoruDrandBeacon.sol:ZoruDrandBeacon",
+      "label": "launchTime",
+      "offset": 0,
+      "slot": "1",
+      "type": "t_uint256"
+    },
+    {
+      "astId": 352,
+      "contract": "src/ZoruDrandBeacon.sol:ZoruDrandBeacon",
+      "label": "launchRound",
+      "offset": 0,
+      "slot": "2",
+      "type": "t_uint64"
+    },
+    {
+      "astId": 356,
+      "contract": "src/ZoruDrandBeacon.sol:ZoruDrandBeacon",
+      "label": "cachedConfig",
+      "offset": 0,
+      "slot": "3",
+      "type": "t_mapping(t_uint48,t_bytes32)"
+    }
+  ],
+  "types": {
+    "t_bytes32": {
+      "encoding": "inplace",
+      "label": "bytes32",
+      "numberOfBytes": "32"
+    },
+    "t_mapping(t_uint48,t_bytes32)": {
+      "encoding": "mapping",
+      "key": "t_uint48",
+      "label": "mapping(uint48 => bytes32)",
+      "numberOfBytes": "32",
+      "value": "t_bytes32"
+    },
+    "t_uint256": {
+      "encoding": "inplace",
+      "label": "uint256",
+      "numberOfBytes": "32"
+    },
+    "t_uint48": {
+      "encoding": "inplace",
+      "label": "uint48",
+      "numberOfBytes": "6"
+    },
+    "t_uint64": {
+      "encoding": "inplace",
+      "label": "uint64",
+      "numberOfBytes": "8"
+    }
+  }
+}

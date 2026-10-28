@@ -1,0 +1,13 @@
+{
+  "admin": "0xF5A9911A70aD0D9456C4228c08B74d161786F410",
+  "beacon": "0x562249B5c3922fAfa31f350EfDb89E4F3F9a82fE",
+  "chainId": 6736,
+  "deploymentBlockNumber": 11036432,
+  "engine": "0x9eD52C07691Cd26758ed1Ebe05d86698a9e54e8C",
+  "launchTime": 1793286781,
+  "ledger": "0xFf53a9079C2853C39C5adBfca788cb0f12aCFF03",
+  "mode": "mainnet",
+  "owner": "0x0dad2Ad1C030e2e67E7c01a952bab3ce81D4bfFC",
+  "targetBits": 19,
+  "token": "0xb972753d17C5131D127B6c22DDE79B91a3132D03"
+}

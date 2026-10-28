@@ -1,0 +1,16 @@
+# References
+
+- [Vexanium Solidity EVM](https://docs.vexanium.com/reference/smart-contract/solidity-evm): EVM and native-layer context. Mainnet identity, gas and opcode behavior are also checked against the running chain.
+- [OpenZeppelin proxy API](https://docs.openzeppelin.com/contracts/5.x/api/proxy): TransparentUpgradeableProxy, ProxyAdmin and ERC-1967 slots. The build pins Contracts 5.7.0.
+- [OpenZeppelin Ownable2Step](https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable2Step) and [contract account ownership](https://docs.openzeppelin.com/contracts/5.x/access-control): the token can later nominate a reviewed multisig owner without changing token bytecode.
+- [Safe threshold and owner model](https://docs.safe.global/advanced/smart-account-concepts) and [deployment requirements](https://docs.safe.global/core-api/safe-installation-overview): reference for an optional future threshold wallet; deployment and UI availability on Vexanium must be verified independently.
+- [Upgradeable contracts](https://docs.openzeppelin.com/upgrades-plugins/writing-upgradeable): initialization and storage requirements.
+- [drand HTTP API v2](https://docs.drand.love/developer/API-v2/drand-http-api/): scheduled round retrieval from the explicitly selected evmnet chain. The official documentation identifies its three-second cadence, BN254 pairing curve and pinned chain hash.
+- [BN254 BLS source](https://github.com/randa-mu/bls-solidity): verifier dependency. The exact revision and notices are in `contracts/vendor/evmnet/UPSTREAM.md`.
+- [drand cryptography](https://docs.drand.love/docs/cryptography/) and [scheme implementation](https://github.com/drand/drand/blob/e8dd607147c676086312b21c22d923dd6a07209a/crypto/schemes.go): evmnet uses BN254, signatures on G1, and a Keccak digest of an eight-byte big-endian round.
+- [RFC 9380](https://www.rfc-editor.org/rfc/rfc9380.html): hash-to-field, XMD and SVDW. The evmnet BN254/Keccak ciphersuite is an application-specific instantiation, not one of the RFC's listed suites.
+- [EIP-196](https://eips.ethereum.org/EIPS/eip-196), [EIP-197](https://eips.ethereum.org/EIPS/eip-197), [EIP-198](https://eips.ethereum.org/EIPS/eip-198) and [EIP-1108](https://eips.ethereum.org/EIPS/eip-1108): BN254 encoding, subgroup checks, modular exponentiation and precompile gas rules.
+- [EIP-2537](https://eips.ethereum.org/EIPS/eip-2537) and [EIP-7883](https://eips.ethereum.org/EIPS/eip-7883): curve security motivation and modular exponentiation repricing. A precompile declaration or Ethereum fork specification does not establish its availability or gas schedule on Vexanium; check the target chain.
+- [Alloy](https://github.com/alloy-rs/alloy): Rust signing and EIP-155 transaction encoding; dependencies are pinned in the miner's Cargo lockfile.
+- [Web3 secret storage](https://ethereum.org/developers/docs/data-structures-and-encoding/web3-secret-storage/): encrypted wallet format, PBKDF2 parameters and AES-128-CTR encoding. The miner documents its supported input limits separately.
+- [Qt QProcess](https://doc.qt.io/qt-6/qprocess.html): desktop transport to the native Rust backend.

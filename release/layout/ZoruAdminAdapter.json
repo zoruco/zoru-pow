@@ -1,0 +1,288 @@
+{
+  "storage": [
+    {
+      "astId": 2768,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "adminOf",
+      "offset": 0,
+      "slot": "0",
+      "type": "t_mapping(t_address,t_address)"
+    },
+    {
+      "astId": 2772,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "implementationOf",
+      "offset": 0,
+      "slot": "1",
+      "type": "t_mapping(t_address,t_address)"
+    },
+    {
+      "astId": 2774,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "ledgerProxy",
+      "offset": 0,
+      "slot": "2",
+      "type": "t_address"
+    },
+    {
+      "astId": 2776,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "engineProxy",
+      "offset": 0,
+      "slot": "3",
+      "type": "t_address"
+    },
+    {
+      "astId": 2778,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "beaconProxy",
+      "offset": 0,
+      "slot": "4",
+      "type": "t_address"
+    },
+    {
+      "astId": 2780,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "suiteRevision",
+      "offset": 0,
+      "slot": "5",
+      "type": "t_uint256"
+    },
+    {
+      "astId": 2782,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "recoveryRequired",
+      "offset": 0,
+      "slot": "6",
+      "type": "t_bool"
+    },
+    {
+      "astId": 2784,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "launchTime",
+      "offset": 0,
+      "slot": "7",
+      "type": "t_uint256"
+    },
+    {
+      "astId": 2786,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "epochSeconds",
+      "offset": 0,
+      "slot": "8",
+      "type": "t_uint256"
+    },
+    {
+      "astId": 2788,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "entered",
+      "offset": 0,
+      "slot": "9",
+      "type": "t_bool"
+    },
+    {
+      "astId": 2790,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "authorizedPrevious",
+      "offset": 1,
+      "slot": "9",
+      "type": "t_address"
+    },
+    {
+      "astId": 2808,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "revisionInfo",
+      "offset": 0,
+      "slot": "10",
+      "type": "t_mapping(t_uint256,t_struct(RevisionSnapshot)2803_storage)"
+    },
+    {
+      "astId": 2839,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "pendingUpgrade",
+      "offset": 0,
+      "slot": "11",
+      "type": "t_struct(SuiteUpgrade)2821_storage"
+    },
+    {
+      "astId": 2841,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "hasPendingUpgrade",
+      "offset": 0,
+      "slot": "17",
+      "type": "t_bool"
+    },
+    {
+      "astId": 2843,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "activationEpoch",
+      "offset": 1,
+      "slot": "17",
+      "type": "t_uint48"
+    },
+    {
+      "astId": 2845,
+      "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+      "label": "activationTime",
+      "offset": 0,
+      "slot": "18",
+      "type": "t_uint256"
+    }
+  ],
+  "types": {
+    "t_address": {
+      "encoding": "inplace",
+      "label": "address",
+      "numberOfBytes": "20"
+    },
+    "t_bool": {
+      "encoding": "inplace",
+      "label": "bool",
+      "numberOfBytes": "1"
+    },
+    "t_bytes32": {
+      "encoding": "inplace",
+      "label": "bytes32",
+      "numberOfBytes": "32"
+    },
+    "t_bytes_storage": {
+      "encoding": "bytes",
+      "label": "bytes",
+      "numberOfBytes": "32"
+    },
+    "t_mapping(t_address,t_address)": {
+      "encoding": "mapping",
+      "key": "t_address",
+      "label": "mapping(address => address)",
+      "numberOfBytes": "32",
+      "value": "t_address"
+    },
+    "t_mapping(t_uint256,t_struct(RevisionSnapshot)2803_storage)": {
+      "encoding": "mapping",
+      "key": "t_uint256",
+      "label": "mapping(uint256 => struct ZoruAdminAdapter.RevisionSnapshot)",
+      "numberOfBytes": "32",
+      "value": "t_struct(RevisionSnapshot)2803_storage"
+    },
+    "t_struct(RevisionSnapshot)2803_storage": {
+      "encoding": "inplace",
+      "label": "struct ZoruAdminAdapter.RevisionSnapshot",
+      "numberOfBytes": "192",
+      "members": [
+        {
+          "astId": 2792,
+          "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+          "label": "ledgerImplementation",
+          "offset": 0,
+          "slot": "0",
+          "type": "t_address"
+        },
+        {
+          "astId": 2794,
+          "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+          "label": "engineImplementation",
+          "offset": 0,
+          "slot": "1",
+          "type": "t_address"
+        },
+        {
+          "astId": 2796,
+          "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+          "label": "beaconImplementation",
+          "offset": 0,
+          "slot": "2",
+          "type": "t_address"
+        },
+        {
+          "astId": 2798,
+          "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+          "label": "ledgerCodehash",
+          "offset": 0,
+          "slot": "3",
+          "type": "t_bytes32"
+        },
+        {
+          "astId": 2800,
+          "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+          "label": "engineCodehash",
+          "offset": 0,
+          "slot": "4",
+          "type": "t_bytes32"
+        },
+        {
+          "astId": 2802,
+          "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+          "label": "beaconCodehash",
+          "offset": 0,
+          "slot": "5",
+          "type": "t_bytes32"
+        }
+      ]
+    },
+    "t_struct(SuiteUpgrade)2821_storage": {
+      "encoding": "inplace",
+      "label": "struct ZoruAdminAdapter.SuiteUpgrade",
+      "numberOfBytes": "192",
+      "members": [
+        {
+          "astId": 2810,
+          "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+          "label": "ledgerImplementation",
+          "offset": 0,
+          "slot": "0",
+          "type": "t_address"
+        },
+        {
+          "astId": 2812,
+          "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+          "label": "ledgerData",
+          "offset": 0,
+          "slot": "1",
+          "type": "t_bytes_storage"
+        },
+        {
+          "astId": 2814,
+          "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+          "label": "engineImplementation",
+          "offset": 0,
+          "slot": "2",
+          "type": "t_address"
+        },
+        {
+          "astId": 2816,
+          "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+          "label": "engineData",
+          "offset": 0,
+          "slot": "3",
+          "type": "t_bytes_storage"
+        },
+        {
+          "astId": 2818,
+          "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+          "label": "beaconImplementation",
+          "offset": 0,
+          "slot": "4",
+          "type": "t_address"
+        },
+        {
+          "astId": 2820,
+          "contract": "src/ZoruAdminAdapter.sol:ZoruAdminAdapter",
+          "label": "beaconData",
+          "offset": 0,
+          "slot": "5",
+          "type": "t_bytes_storage"
+        }
+      ]
+    },
+    "t_uint256": {
+      "encoding": "inplace",
+      "label": "uint256",
+      "numberOfBytes": "32"
+    },
+    "t_uint48": {
+      "encoding": "inplace",
+      "label": "uint48",
+      "numberOfBytes": "6"
+    }
+  }
+}
