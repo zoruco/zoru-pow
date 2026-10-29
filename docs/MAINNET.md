@@ -2,11 +2,13 @@
 
 **Chain ID:** 6736
 
-**EVM RPC:** `https://api.windcrypto.com/rpc`
+**EVM RPC:** `https://vexascan.com/rpc`
 
-**Native RPC:** `https://api.windcrypto.com`
+**Native API:** `https://vexascan.com:8443`
 
 **Launch:** 29 October 2026, 15:13:01 UTC (22:13:01 WIB)
+
+Other EVM RPC endpoints are listed at [Chainlist](https://chainlist.org/chain/6736). Check that an endpoint reports chain ID `6736` before using it.
 
 ## Contract addresses
 
@@ -39,15 +41,24 @@ The checksum detects changes to the manifest; it does not authenticate its publi
 
 ## Verify deployment
 
-Run from the repository root with Foundry's `cast` and Python 3:
+Run these commands from the repository root with Foundry's `cast` and Python 3:
 
 ```sh
-cast chain-id --rpc-url https://api.windcrypto.com/rpc
-cast call 0xb972753d17C5131D127B6c22DDE79B91a3132D03   'owner()(address)' --rpc-url https://api.windcrypto.com/rpc
-cast call 0xb972753d17C5131D127B6c22DDE79B91a3132D03   'issuer()(address)' --rpc-url https://api.windcrypto.com/rpc
-python3 tools/release_manifest.py   --deployment release/deployment-record.json   --read https://api.windcrypto.com/rpc   --native https://api.windcrypto.com   --output release/mainnet.json
+export EVM_RPC=https://vexascan.com/rpc
+export VEX_NATIVE_RPC=https://vexascan.com:8443
+
+cast chain-id --rpc-url "$EVM_RPC"
+cast call 0xb972753d17C5131D127B6c22DDE79B91a3132D03 \
+  'owner()(address)' --rpc-url "$EVM_RPC"
+cast call 0xb972753d17C5131D127B6c22DDE79B91a3132D03 \
+  'issuer()(address)' --rpc-url "$EVM_RPC"
+
+python3 tools/release_manifest.py \
+  --deployment release/deployment-record.json \
+  --read "$EVM_RPC" --native "$VEX_NATIVE_RPC" \
+  --output /tmp/zoru-mainnet-check.json
 ```
 
-The manifest verifier checks the chain, contract bytecode, proxy implementations, owner, issuer and protocol configuration. For mining and wallet instructions, use the companion `zoru-miner` repository.
+The verifier checks the chain, contract bytecode, proxy implementations, owner, issuer and protocol configuration. A newly generated checksum also depends on the current source tree; keep the original `release/mainnet.json` for existing releases. For wallet and mining commands, see `zoru-miner`.
 
 The current launch timestamp is configured on-chain. No additional launch transaction is required.

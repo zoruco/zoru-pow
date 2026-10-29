@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-RPC=${ZORU_RPC:-https://api.windcrypto.com/rpc}
+RPC=${ZORU_RPC:-https://vexascan.com/rpc}
 CAST=${CAST:-cast}
 OWNER=0x0dad2Ad1C030e2e67E7c01a952bab3ce81D4bfFC
 echo "chain: $("$CAST" chain-id --rpc-url "$RPC")"
