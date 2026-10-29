@@ -1,6 +1,7 @@
 # References
 
 - [Vexanium Solidity EVM](https://docs.vexanium.com/reference/smart-contract/solidity-evm): EVM and native-layer context. Mainnet identity, gas and opcode behavior are also checked against the running chain.
+- [Ethereum JSON-RPC](https://ethereum.org/developers/docs/apis/json-rpc/#eth_gasprice) and the [VEX transaction relay](https://github.com/pixelgenius-id/evm-miner/blob/main/src/miner.ts): gas quotes, inclusion fees and signed transaction submission. Read the current quote rather than fixing the miner's gas price.
 - [OpenZeppelin proxy API](https://docs.openzeppelin.com/contracts/5.x/api/proxy): TransparentUpgradeableProxy, ProxyAdmin and ERC-1967 slots. The build pins Contracts 5.7.0.
 - [OpenZeppelin Ownable2Step](https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable2Step) and [contract account ownership](https://docs.openzeppelin.com/contracts/5.x/access-control): the token can later nominate a reviewed multisig owner without changing token bytecode.
 - [Safe threshold and owner model](https://docs.safe.global/advanced/smart-account-concepts) and [deployment requirements](https://docs.safe.global/core-api/safe-installation-overview): reference for an optional future threshold wallet; deployment and UI availability on Vexanium must be verified independently.

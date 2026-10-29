@@ -62,3 +62,5 @@ python3 tools/release_manifest.py \
 The verifier checks the chain, contract bytecode, proxy implementations, owner, issuer and protocol configuration. A newly generated checksum also depends on the current source tree; keep the original `release/mainnet.json` for existing releases. For wallet and mining commands, see `zoru-miner`.
 
 The current launch timestamp is configured on-chain. No additional launch transaction is required.
+
+EVM storage also depends on RAM allocated to the native `vex.evm` account. A relay error reporting insufficient RAM for that account means the native quota must be increased before new storage can be written. Proofs, epoch records and beacon caches consume persistent storage. Check native resource capacity alongside EVM gas balance; see the [Vexanium resource model](https://docs.vexanium.com/vexanium-protocol).
