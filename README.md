@@ -2,6 +2,8 @@
 
 ZORU is a Keccak proof-of-work token on **Vexanium EVM mainnet (chain ID 6736)**. Miners submit proofs to the Ledger. Rewards are allocated across accepted proofs in nonempty 60-second epochs.
 
+[ZORU project home](https://github.com/zoruco/zoruco) · [Miner downloads](https://github.com/zoruco/zoru-miner/releases/latest)
+
 - **RPC:** `https://vexascan.com/rpc`
 - **Token:** 8 decimals; lifetime mint cap of 21,000,000 ZORU
 - **Launch:** 29 October 2026 at 15:13:01 UTC (22:13:01 WIB)
