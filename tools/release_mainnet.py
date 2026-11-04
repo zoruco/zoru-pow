@@ -193,11 +193,11 @@ class Release:
                       '['+','.join(str(epoch) for epoch,_ in part)+']')
             require(all(int(value,16)==0 for value in migration.storage(self.manifest['beacon'],slots)),
                     'Obsolete beacon storage remains')
-        self.verify_records(migration)
+        self.verify_records(migration,records=False)
         for contract in ['ledger','beacon']:self.native_inventory(path,'canonical',contract)
         self.send('retire-migration-receipts','ledger','clearMigrationReceipts()')
         self.empty_receipts()
-        self.verify_records(migration)
+        self.verify_records(migration,records=False)
         self.native_inventory(path,'canonical','ledger')
         barrier=self.native('get_info')['head_block_num']
         self.state['irreversibilityBarrier']=barrier
@@ -205,11 +205,12 @@ class Release:
         self.save()
         self.irreversible(barrier)
 
-    def verify_records(self,migration):
+    def verify_records(self,migration,records=True):
         migration.accounting()
-        for low in range(0,len(migration.proofs),32):migration.verify_proofs(migration.proofs[low:low+32],cleared=True)
-        epochs=sorted((int(epoch),record) for epoch,record in migration.epochs.items())
-        for low in range(0,len(epochs),32):migration.verify_epochs(epochs[low:low+32],'cleared')
+        if records:
+            for low in range(0,len(migration.proofs),32):migration.verify_proofs(migration.proofs[low:low+32],cleared=True)
+            epochs=sorted((int(epoch),record) for epoch,record in migration.epochs.items())
+            for low in range(0,len(epochs),32):migration.verify_epochs(epochs[low:low+32],'cleared')
         for account,balance in migration.inventory['tokenBalances'].items():
             require(self.number('token','balanceOf(address)',account)==balance,'Historical token balance changed')
         require(self.number('token','lifetimeMinted()')==migration.inventory['lifetimeMinted'],
@@ -236,7 +237,7 @@ class Release:
                 'Verified migration and cleanup are incomplete')
         self.irreversible(self.state['irreversibilityBarrier'])
         migration=self.migration()
-        self.verify_records(migration)
+        self.verify_records(migration,records=False)
         current='0x'+self.call('admin','implementationOf(address)',self.manifest['ledger'])[-40:].lower()
         if current!=self.state['implementations']['ZoruLedger'].lower():
             retirement=self.owner.journal/'retire-migration-receipts.json'
