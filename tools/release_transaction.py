@@ -140,8 +140,74 @@ class MainnetTransactions:
                 'Release transaction failed; stop the affected operation')
         return receipt
 
+    def native_nonce(self):
+        import http.client
+        native=self.native.url
+        lower='0'
+        for _ in range(100):
+            connection=(http.client.HTTPSConnection if native.scheme=='https' else http.client.HTTPConnection)(
+                native.hostname,native.port,timeout=15)
+            try:
+                payload={'code':'vex.evm','scope':'vex.evm','table':'account','json':True,
+                         'limit':1000,'lower_bound':lower}
+                connection.request('POST',native.path.rstrip('/')+'/v1/chain/get_table_rows',
+                                   json.dumps(payload),{'Content-Type':'application/json'})
+                response=connection.getresponse()
+                require(response.status==200,'Native nonce check failed')
+                raw=response.read(8*1024*1024+1)
+                require(len(raw)<=8*1024*1024,'Native account response exceeds its bound')
+                result=json.loads(raw)
+            finally:connection.close()
+            matches=[row for row in result['rows'] if row['eth_address'].lower()==self.account[2:]]
+            if matches:
+                require(len(matches)==1 and type(matches[0]['nonce']) is int,'Ambiguous native signer nonce')
+                return matches[0]['nonce']
+            if not result['more']:break
+            require(result['next_key']!=lower,'Native nonce pagination stalled')
+            lower=result['next_key']
+        raise ValueError('Native signer account was not found within the bounded scan')
+
+    def retry_retained(self,record):
+        self.verify()
+        transaction=record['transaction']
+        require(record['label'] and all(c.isalnum() or c in '-_' for c in record['label']),
+                'Invalid retained operation label')
+        require(transaction['from'].lower()==self.account and transaction['chainId']==6736
+                and str(transaction['value'])=='0','Retained transaction identity changed')
+        recipient=transaction['to']
+        require((recipient is None and record['label'].startswith('deploy-Zoru')) or
+                (isinstance(recipient,str) and recipient.lower() in
+                 [self.manifest[role].lower() for role in ['ledger','beacon','admin']]),
+                'Retained recipient is outside the authorized release')
+        for rpc in [self.rpc,self.submit_rpc]:
+            chain,receipt,pending,latest_nonce,pending_nonce=rpc.batch([
+                ('eth_chainId',[]),('eth_getTransactionReceipt',[record['transactionHash']]),
+                ('eth_getTransactionByHash',[record['transactionHash']]),
+                ('eth_getTransactionCount',[self.account,'latest']),
+                ('eth_getTransactionCount',[self.account,'pending'])])
+            require(int(chain,16)==6736,'Recovery network identity changed')
+            if receipt is not None or pending is not None:return False
+            if int(latest_nonce,16)!=transaction['nonce'] or int(pending_nonce,16)!=transaction['nonce']:return False
+        if self.native_nonce()!=transaction['nonce']:return False
+        if int(self.submit_rpc.call('eth_gasPrice',[]),16)>int(transaction['gasPrice']):return False
+        signed_path=self.journal/(record['label']+'.raw')
+        require(Path(record['signedTransactionFile'])==signed_path,'Retained transaction path changed')
+        raw=signed_path.read_text().strip()
+        require(subprocess.check_output([self.cast,'keccak'],input=raw,text=True).strip()==record['transactionHash'],
+                'Retained signed transaction fingerprint differs')
+        record.setdefault('resubmissions',[]).append({'timestamp':int(time.time()),
+            'nativeAccountNonce':transaction['nonce'],'sameSignedBytes':True})
+        atomic_json(self.journal/(record['label']+'.json'),record)
+        result=self.submit_rpc.call('eth_sendRawTransaction',[raw])
+        require(result.lower()==record['transactionHash'],'Recovery broadcast hash differs; retain the journal')
+        print(json.dumps({'operation':record['label'],'hash':record['transactionHash'],
+                          'recovery':'RETAINED_SIGNED_BYTES','newSignatures':0}),flush=True)
+        return True
+
     def wait_irreversible(self,record):
         deadline=time.monotonic()+120
+        next_retry=time.monotonic()+45
+        retries=0
         binding=None
         barrier=None
         while time.monotonic()<deadline:
@@ -153,6 +219,9 @@ class MainnetTransactions:
                     barrier=info['head_block_num']
                 if info['last_irreversible_block_num']>=barrier:
                     return receipt,barrier,info['last_irreversible_block_num']
+            elif retries<2 and time.monotonic()>=next_retry:
+                if self.retry_retained(record):retries+=1
+                next_retry=time.monotonic()+45
             time.sleep(0.5)
         raise RuntimeError('Retain and reconcile transaction '+record['transactionHash'])
 
