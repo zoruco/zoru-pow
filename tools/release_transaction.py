@@ -75,18 +75,7 @@ class MainnetTransactions:
     def verify(self):
         require(int(self.rpc.call('eth_chainId', []),16) == 6736, 'Mainnet chain identity changed')
         require('anvil' not in str(self.rpc.call('web3_clientVersion',[])).lower(), 'Production signing refuses local fork execution')
-        # Rpc supplies the same bounded HTTP transport for native chain identity.
-        native = self.native.url
-        import http.client
-        connection = (http.client.HTTPSConnection if native.scheme == 'https' else http.client.HTTPConnection)(
-            native.hostname, native.port, timeout=15)
-        try:
-            connection.request('POST', (native.path.rstrip('/')+'/v1/chain/get_info'), '{}', {'Content-Type':'application/json'})
-            response = connection.getresponse()
-            require(response.status == 200, 'Native identity endpoint failed')
-            require(json.loads(response.read(1048576))['chain_id'] == NATIVE_CHAIN, 'Native mainnet identity changed')
-        finally:
-            connection.close()
+        self.native_info()
         actual_owner = self.call(self.manifest['token'], selector('owner()'))
         require('0x'+actual_owner[-40:].lower() == self.owner, 'Protocol owner changed')
         require('0x'+self.call(self.manifest['ledger'],selector('protocolAdmin()'))[-40:].lower()
@@ -110,6 +99,21 @@ class MainnetTransactions:
             actual_hash = subprocess.check_output([self.cast,'keccak'],input=implementation_code,text=True).strip()
             require(actual_hash == self.allowed_implementations[role][implementation], 'Active implementation bytecode changed')
 
+    def native_info(self):
+        native = self.native.url
+        import http.client
+        connection = (http.client.HTTPSConnection if native.scheme == 'https' else http.client.HTTPConnection)(
+            native.hostname, native.port, timeout=15)
+        try:
+            connection.request('POST', (native.path.rstrip('/')+'/v1/chain/get_info'), '{}', {'Content-Type':'application/json'})
+            response = connection.getresponse()
+            require(response.status == 200, 'Native identity endpoint failed')
+            info=json.loads(response.read(1048576))
+            require(info['chain_id'] == NATIVE_CHAIN, 'Native mainnet identity changed')
+            return info
+        finally:
+            connection.close()
+
     def confirmed(self, record):
         receipt = self.rpc.call('eth_getTransactionReceipt',[record['transactionHash']])
         if receipt is None:
@@ -122,6 +126,22 @@ class MainnetTransactions:
         require(receipt['from'].lower() == self.account and int(receipt['status'],16) == 1,
                 'Release transaction failed; stop the affected operation')
         return receipt
+
+    def wait_irreversible(self,record):
+        deadline=time.monotonic()+120
+        binding=None
+        barrier=None
+        while time.monotonic()<deadline:
+            receipt=self.confirmed(record)
+            if receipt is not None:
+                info=self.native_info()
+                if receipt['blockHash']!=binding:
+                    binding=receipt['blockHash']
+                    barrier=info['head_block_num']
+                if info['last_irreversible_block_num']>=barrier:
+                    return receipt,barrier,info['last_irreversible_block_num']
+            time.sleep(0.5)
+        raise RuntimeError('Retain and reconcile transaction '+record['transactionHash'])
 
     def send(self, label, to, data, gas_limit=None, creation_runtime=None):
         require(label and all(c.isalnum() or c in '-_' for c in label), 'Invalid operation label')
@@ -196,19 +216,12 @@ class MainnetTransactions:
         require(result.lower() == tx_hash.lower(), 'Broadcast hash mismatch; retain the prepared transaction')
         record['state'] = 'broadcast'
         atomic_json(path,record)
-        deadline = time.monotonic()+120
-        receipt = None
-        while time.monotonic() < deadline:
-            receipt = self.confirmed(record)
-            if receipt is not None and int(self.rpc.call('eth_blockNumber',[]),16) >= int(receipt['blockNumber'],16)+2:
-                break
-            time.sleep(0.5)
-        else:
-            raise RuntimeError('Retain and reconcile transaction '+tx_hash)
+        receipt,barrier,irreversible=self.wait_irreversible(record)
         if to is None:
             code = self.rpc.call('eth_getCode',[receipt['contractAddress'],'latest'])
             require(code == creation_runtime, 'Deployed runtime differs from reviewed artifact')
-        record.update(state='confirmed',receipt=receipt,confirmedAt=int(time.time()))
+        record.update(state='confirmed',receipt=receipt,confirmedAt=int(time.time()),
+                      nativeReceiptBarrier=barrier,nativeIrreversibleAt=irreversible)
         atomic_json(path,record)
         print(json.dumps({'operation':label,'hash':tx_hash,'gasUsed':int(receipt['gasUsed'],16)}),flush=True)
         return receipt

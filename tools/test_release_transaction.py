@@ -2,12 +2,29 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock,patch
 
 from release_transaction import MainnetTransactions,atomic_json
 
 
 class TransactionRecoveryTests(unittest.TestCase):
+    def test_native_finality_uses_a_fixed_checkpoint(self):
+        transaction=MainnetTransactions.__new__(MainnetTransactions)
+        receipt={'blockHash':'0x'+'a'*64}
+        transaction.confirmed=Mock(return_value=receipt)
+        transaction.native_info=Mock(side_effect=[{'head_block_num':100,'last_irreversible_block_num':99},
+                                                {'head_block_num':102,'last_irreversible_block_num':100}])
+        with patch('release_transaction.time.sleep'):
+            self.assertEqual(transaction.wait_irreversible({'transactionHash':'0x1'}),(receipt,100,100))
+
+    def test_reincluded_receipt_requires_a_new_native_finality_checkpoint(self):
+        transaction=MainnetTransactions.__new__(MainnetTransactions)
+        old={'blockHash':'0x'+'a'*64};new={'blockHash':'0x'+'b'*64}
+        transaction.confirmed=Mock(side_effect=[old,new,new])
+        transaction.native_info=Mock(side_effect=[{'head_block_num':100,'last_irreversible_block_num':99},
+            {'head_block_num':105,'last_irreversible_block_num':103},{'head_block_num':106,'last_irreversible_block_num':105}])
+        with patch('release_transaction.time.sleep'):
+            self.assertEqual(transaction.wait_irreversible({'transactionHash':'0x1'}),(new,105,105))
     def test_receipt_waits_for_its_canonical_block_without_another_signature(self):
         transaction=MainnetTransactions.__new__(MainnetTransactions)
         transaction.rpc=Mock()
