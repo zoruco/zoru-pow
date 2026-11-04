@@ -26,7 +26,7 @@ An epoch retains its target, authenticated seed, budget, proof count, generation
 
 The Beacon accepts only the scheduled, authenticated signature for the current epoch. Its rolling cache occupies three fixed rows. Historical authenticated seeds remain in the Ledger and publication events. Public mining and claims require no new coordinator, server or proof format.
 
-The final Ledger uses only the canonical mappings. Original mapping locations remain reserved at slots 12 and 13; canonical epochs and proofs use slots 21 and 16. The temporary migration methods are absent from the final implementation. Migration receipts occupy a fixed number of reserved global slots.
+The final Ledger uses only the canonical mappings. Original mapping locations remain reserved at slots 12 and 13; canonical epochs and proofs use slots 21 and 16. The temporary migration methods are absent from the final implementation. Temporary migration counters and inventory markers are checked, recorded in events and cleared before final activation. Their eight positions remain reserved and zero.
 
 ## Design choices
 

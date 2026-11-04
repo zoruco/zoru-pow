@@ -25,13 +25,13 @@ The original proof mapping remains at slot 13 and the original epoch mapping at 
 
 Migration blocks proof submission, epoch creation, sealing and claims until the canonical records are complete. Copying and clearing use separate bounded transactions. Every destination, original entitlement, token balance and global accounting counter is checked before cleanup. Unknown native storage rows prevent cleanup. The final implementation contains neither historical-reader fallback nor temporary migration methods.
 
-The full mainnet-state rehearsal includes claimed and unclaimed records, interrupted batches, restart, idempotency, complete cleanup, the original proxy addresses, final activation, historical payment and rejection of double claims. Mainnet execution additionally waits for native irreversibility after the last migration operation and before activating the final implementation.
+The full mainnet-state rehearsal includes claimed and unclaimed records, interrupted batches, restart, idempotency, complete cleanup, the original proxy addresses, final activation, historical payment and rejection of double claims. Temporary inventory markers and migration counters are cleared after reconciliation; their eight reserved positions remain zero. Mainnet execution additionally waits for native irreversibility after the last migration operation and before activating the final implementation.
 
 ## Verification
 
 | Check | Evidence |
 | --- | --- |
-| Solidity | 143 tests in the complete suite; 13 targeted boundary and storage tests, including two additional index boundary cases; no failed final tests |
+| Solidity | 143 tests in the complete suite; 15 targeted boundary, storage and cleanup tests, including four additional boundary and receipt retirement cases; no failed final tests |
 | Storage layout | Six original/migration/final comparisons in [storage-validation.json](../release/storage-validation.json) |
 | Rust library | 51 passed; two external-fixture tests excluded from that command |
 | Rust updater | Three passed |

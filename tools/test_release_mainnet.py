@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 from types import SimpleNamespace
+from pathlib import Path
+import tempfile
 import unittest
 from unittest.mock import Mock
 
@@ -15,9 +17,9 @@ class ReleaseSafetyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'incomplete'):release.finalize()
         release.upgrade.assert_not_called()
 
-    def test_incomplete_or_wrong_inventory_counters_cannot_activate_final_code(self):
-        for counter in [[1,1,0,0,0],[2,1,1,1,1],[1,2,2,2,1]]:
-            with self.subTest(counter=counter):
+    def test_uncleared_or_unrecorded_receipt_retirement_cannot_activate_final_code(self):
+        for recorded in [False,True]:
+            with self.subTest(recorded=recorded),tempfile.TemporaryDirectory() as directory:
                 release=Release.__new__(Release)
                 release.state={'stages':{'migrate':'ALL_RECORDS_VERIFIED_AND_OBSOLETE_ROWS_CLEARED'},
                     'irreversibilityBarrier':100,'implementations':{'ZoruLedger':'0x'+'2'*40}}
@@ -25,9 +27,12 @@ class ReleaseSafetyTests(unittest.TestCase):
                 release.verify_records=Mock()
                 release.migration=Mock(return_value=SimpleNamespace(proofs=[1],epochs={1:1},inventory_hash='0x1'))
                 release.manifest={'ledger':'0x'+'3'*40}
-                release.call=Mock(side_effect=['0x'+'1'*64,'0x'+''.join(f'{v:064x}' for v in counter)])
+                release.call=Mock(return_value='0x'+'1'*64)
+                release.owner=SimpleNamespace(journal=Path(directory),confirmed=Mock(return_value={'status':'0x1'}))
+                if recorded:(release.owner.journal/'retire-migration-receipts.json').write_text('{}')
+                release.empty_receipts=Mock(side_effect=ValueError('Temporary migration receipt remains'))
                 release.upgrade=Mock()
-                with self.assertRaisesRegex(ValueError,'counters differ'):release.finalize()
+                with self.assertRaises(ValueError):release.finalize()
                 release.upgrade.assert_not_called()
 
     def test_operational_account_never_receives_owner_migration_authority(self):

@@ -174,7 +174,13 @@ class Release:
             self.state['nativeSourceVerified']=True
             self.save()
         migration=self.migration()
-        migration.run()
+        retired=self.owner.journal/'retire-migration-receipts.json'
+        if retired.exists():
+            require(self.owner.confirmed(json.loads(retired.read_text())) is not None,
+                    'Retained receipt retirement must be reconciled')
+            self.empty_receipts()
+        else:
+            migration.run()
         caches=sorted((int(epoch),record) for epoch,record in migration.inventory['beaconCaches'].items()
                       if any(int(record[key],16) for key in ['seed','config']))
         for low in range(0,len(caches),32):
@@ -189,6 +195,10 @@ class Release:
                     'Obsolete beacon storage remains')
         self.verify_records(migration)
         for contract in ['ledger','beacon']:self.native_inventory(path,'canonical',contract)
+        self.send('retire-migration-receipts','ledger','clearMigrationReceipts()')
+        self.empty_receipts()
+        self.verify_records(migration)
+        self.native_inventory(path,'canonical','ledger')
         barrier=self.native('get_info')['head_block_num']
         self.state['irreversibilityBarrier']=barrier
         self.state['stages']['migrate']='ALL_RECORDS_VERIFIED_AND_OBSOLETE_ROWS_CLEARED'
@@ -204,6 +214,11 @@ class Release:
             require(self.number('token','balanceOf(address)',account)==balance,'Historical token balance changed')
         require(self.number('token','lifetimeMinted()')==migration.inventory['lifetimeMinted'],
                 'Historical minted supply changed')
+
+    def empty_receipts(self):
+        values=self.rpc.batch([('eth_getStorageAt',[self.manifest['ledger'],hex(slot),'latest'])
+                              for slot in [17,18,19,20,22,23,24,25]])
+        require(all(int(value,16)==0 for value in values),'Temporary migration receipt remains')
 
     def irreversible(self,barrier):
         deadline=time.monotonic()+1800
@@ -224,12 +239,13 @@ class Release:
         self.verify_records(migration)
         current='0x'+self.call('admin','implementationOf(address)',self.manifest['ledger'])[-40:].lower()
         if current!=self.state['implementations']['ZoruLedger'].lower():
-            for signature,expected in [('proofMigrationStatus()',len(migration.proofs)),('epochMigrationStatus()',len(migration.epochs))]:
-                status=words(self.call('ledger',signature),5)
-                require(status==[int(migration.inventory_hash,16),expected,expected,expected,1],
-                        'Migration completion counters differ')
+            retirement=self.owner.journal/'retire-migration-receipts.json'
+            require(retirement.exists() and self.owner.confirmed(json.loads(retirement.read_text())) is not None,
+                    'Verified migration receipt retirement is missing')
+            self.empty_receipts()
             self.upgrade('final',self.state['implementations']['ZoruLedger'],self.state['implementations']['ZoruDrandBeacon'])
         self.active('ZoruLedger','ZoruDrandBeacon')
+        self.empty_receipts()
         self.verify_records(migration)
         for contract in ['ledger','beacon']:self.native_inventory(self.inventory(),'canonical',contract)
         self.state['stages']['finalize']='REVIEWED_FINAL_IMPLEMENTATIONS_ACTIVE_PAUSED'

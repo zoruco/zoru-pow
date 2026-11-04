@@ -91,7 +91,9 @@ class MigrationExperiment(Experiment):
         public = subprocess.check_output([self.a.cast,'wallet','address','--keystore',str(self.a.keystore),'--password-file',str(self.a.password_file)],text=True).strip()
         require(public.lower()==self.a.account.lower(),'Signer mismatch')
         self.result['nativeCodeHash']=self.native('get_code_hash',{'account_name':'vex.evm'})['code_hash']
-        launch=int(self.rpc('eth_getBlockByNumber',['latest',False])['timestamp'],16)+240
+        delay=getattr(self.a,'launch_delay',240)
+        require(60<=delay<=600,'Test launch delay must allow bounded deployment preparation')
+        launch=int(self.rpc('eth_getBlockByNumber',['latest',False])['timestamp'],16)+delay
         self.result['launchTime']=launch
         self.deploy('ZoruToken','constructor(address)',self.a.account)
         self.deploy('ZoruAdminAdapter','constructor(address)',self.contracts['ZoruToken'])
@@ -152,6 +154,11 @@ class MigrationExperiment(Experiment):
         status=self.view('ledger','epochMigrationStatus()')
         require(int(status[-64:],16)==1,'Epoch migration completeness not proven')
         self.result['epochMigrationStatus']=status
+        self.tx('retire-migration-receipts','ledger','clearMigrationReceipts()')
+        for slot in [17,18,19,20,22,23,24,25]:
+            require(int(self.rpc('eth_getStorageAt',[self.contracts['ledger'],hex(slot),'latest']),16)==0,
+                    'Temporary migration receipt remains')
+        self.result['temporaryMigrationSlotsCleared']=True
         self.upgrade('ZoruLedger')
         require(self.snapshot()==baseline,'Final upgrade changed entitlements')
         for digest,record in source.items():require(self.view('ledger','proofs(bytes32)',digest)==record,'Final historical lookup changed')
@@ -185,6 +192,7 @@ def main():
     p.add_argument('--bytecode',type=Path,required=True)
     p.add_argument('--artifacts',type=Path,required=True)
     p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--launch-delay',type=int,default=240)
     MigrationExperiment(p.parse_args()).run()
 
 

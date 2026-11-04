@@ -238,6 +238,9 @@ def run(args):
             send(f'beacon-clear-{low:06d}','beacon','clearHistoricalCache(uint48[])','['+','.join(str(e) for e,_ in part)+']')
             after = migration.storage(manifest['beacon'],[slot for _,record in part for slot in record['storageSlots']])
             require(all(int(value,16) == 0 for value in after), 'Fork beacon cleanup left old rows')
+        send('retire-migration-receipts','ledger','clearMigrationReceipts()')
+        require(all(int(value,16)==0 for value in migration.storage(manifest['ledger'],
+            [hex(slot) for slot in [17,18,19,20,22,23,24,25]])), 'Temporary migration receipts remain')
         ledger_final, beacon_final = deploy('ZoruLedger'), deploy('ZoruDrandBeacon')
         upgrade('final',ledger_final,beacon_final)
         migration.accounting()
@@ -280,7 +283,8 @@ def run(args):
             'blockHash':inventory['blockHash'],'inventorySha256':inventory['inventorySha256'],
             'proofsVerified':len(migration.proofs),'epochsVerified':len(ids),'beaconCachesCleared':len(caches),
             'historicalUnclaimedProofsPaid':len(unclaimed),'historicalUnclaimedBaseUnitsPaid':sum(entitlements.values()),
-            'interruptedMigrationResumed':True,'proxyAddresses':{k:manifest[k] for k in ['ledger','engine','beacon']},
+            'interruptedMigrationResumed':True,'temporaryMigrationSlotsCleared':True,
+            'proxyAddresses':{k:manifest[k] for k in ['ledger','engine','beacon']},
             'transactions':len(t.records),'finalLedgerImplementation':ledger_final,'finalBeaconImplementation':beacon_final}
         atomic_json(args.output/'result.json',result)
         print(json.dumps(result,indent=2))

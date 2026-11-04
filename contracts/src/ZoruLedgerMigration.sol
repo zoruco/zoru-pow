@@ -23,6 +23,9 @@ contract ZoruLedgerMigration is ZoruLedger {
     event EpochMigrationStarted(bytes32 indexed inventoryHash, uint256 expectedEpochs);
     event LegacyEpochCopied(uint48 indexed epoch);
     event LegacyEpochCleared(uint48 indexed epoch);
+    event MigrationReceiptsCleared(
+        bytes32 indexed proofInventory, bytes32 indexed epochInventory, uint256 proofs, uint256 epochs
+    );
 
     function epochInfo(uint48 epoch) public view override returns (Epoch memory) {
         if (compactEpochs[epoch].target != 0) return super.epochInfo(epoch);
@@ -254,5 +257,35 @@ contract ZoruLedgerMigration is ZoruLedger {
         }
         epochMigrationCleared += cleared;
         if (epochMigrationCleared > epochMigrationExpected) revert InvalidMigrationState();
+    }
+
+    /// @notice Retires temporary counters after verified record cleanup.
+    /// @dev Completion remains in events; all eight receipt slots become zero.
+    function clearMigrationReceipts() external onlyOwner {
+        if (!admissionPaused || !claimsPaused) revert InvalidMigrationState();
+        if (proofMigrationInventoryHash == bytes32(0) && epochMigrationInventoryHash == bytes32(0)) {
+            if (
+                proofMigrationExpected != 0 || proofMigrationCopied != 0 || proofMigrationCleared != 0
+                    || epochMigrationExpected != 0 || epochMigrationCopied != 0 || epochMigrationCleared != 0
+            ) revert InvalidMigrationState();
+            return;
+        }
+        if (
+            proofMigrationInventoryHash == bytes32(0) || epochMigrationInventoryHash == bytes32(0)
+                || proofMigrationExpected != totalProofs || proofMigrationCopied != proofMigrationExpected
+                || proofMigrationCleared != proofMigrationExpected || epochMigrationCopied != epochMigrationExpected
+                || epochMigrationCleared != epochMigrationExpected
+        ) revert InvalidMigrationState();
+        emit MigrationReceiptsCleared(
+            proofMigrationInventoryHash, epochMigrationInventoryHash, proofMigrationExpected, epochMigrationExpected
+        );
+        delete proofMigrationInventoryHash;
+        delete proofMigrationExpected;
+        delete proofMigrationCopied;
+        delete proofMigrationCleared;
+        delete epochMigrationInventoryHash;
+        delete epochMigrationExpected;
+        delete epochMigrationCopied;
+        delete epochMigrationCleared;
     }
 }

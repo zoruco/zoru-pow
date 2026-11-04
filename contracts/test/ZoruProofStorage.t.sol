@@ -98,6 +98,50 @@ contract ZoruProofStorageTest {
         migration.clearLegacyEpochs(ids);
     }
 
+    function testReceiptRetirementClearsAllTemporaryStateAndPreservesEntitlements() public {
+        _complete();
+        bytes memory proofCall = abi.encodeCall(ZoruLedger.proofs, (unclaimed));
+        (bool beforeOk, bytes memory proofBefore) = address(migration).staticcall(proofCall);
+        bytes memory epochBefore = abi.encode(migration.epochInfo(0));
+        uint256 allocated = migration.allocatedSupply();
+        uint256 funded = migration.fundedSupply();
+        uint256 paid = migration.paidSupply();
+        migration.clearMigrationReceipts();
+        migration.clearMigrationReceipts();
+        for (uint256 slot = 17; slot <= 25; ++slot) {
+            if (slot != 21) require(vm.load(address(migration), bytes32(slot)) == 0, "migration receipt remains");
+        }
+        (bool afterOk, bytes memory proofAfter) = address(migration).staticcall(proofCall);
+        require(beforeOk && afterOk && keccak256(proofAfter) == keccak256(proofBefore), "proof changed");
+        require(keccak256(abi.encode(migration.epochInfo(0))) == keccak256(epochBefore), "epoch changed");
+        require(
+            migration.allocatedSupply() == allocated && migration.fundedSupply() == funded
+                && migration.paidSupply() == paid,
+            "accounting changed"
+        );
+        _upgrade(address(new ZoruLedger()));
+        ZoruLedger finalLedger = ZoruLedger(address(migration));
+        finalLedger.setClaimsPaused(false);
+        finalLedger.claim(unclaimed);
+        (bool ok,) = address(finalLedger).call(abi.encodeCall(ZoruLedgerMigration.clearMigrationReceipts, ()));
+        require(!ok, "temporary cleanup remains in final runtime");
+    }
+
+    function testReceiptRetirementRejectsIncompleteUnauthorizedAndUnpausedCalls() public {
+        migration.startProofMigration(INVENTORY, 3);
+        (bool ok,) = address(migration).call(abi.encodeCall(ZoruLedgerMigration.clearMigrationReceipts, ()));
+        require(!ok, "incomplete migration retired");
+        _complete();
+        vm.prank(BOB);
+        (ok,) = address(migration).call(abi.encodeCall(ZoruLedgerMigration.clearMigrationReceipts, ()));
+        require(!ok, "unauthorized retirement");
+        migration.setClaimsPaused(false);
+        (ok,) = address(migration).call(abi.encodeCall(ZoruLedgerMigration.clearMigrationReceipts, ()));
+        require(!ok, "unpaused retirement");
+        migration.setClaimsPaused(true);
+        migration.clearMigrationReceipts();
+    }
+
     function testActualUpgradesPreserveClaimsBalancesAndProxyAddresses() public {
         address proxy = address(original);
         uint256 allocated = original.allocatedSupply();
