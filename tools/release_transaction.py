@@ -115,6 +115,8 @@ class MainnetTransactions:
         if receipt is None:
             return None
         header = self.rpc.call('eth_getBlockByNumber',[receipt['blockNumber'],False])
+        if header is None:
+            return None
         require(header['hash'] == receipt['blockHash'] and record['transactionHash'] in header['transactions'],
                 'Transaction receipt is not canonical')
         require(receipt['from'].lower() == self.account and int(receipt['status'],16) == 1,

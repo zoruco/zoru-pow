@@ -8,6 +8,12 @@ from release_transaction import MainnetTransactions,atomic_json
 
 
 class TransactionRecoveryTests(unittest.TestCase):
+    def test_receipt_waits_for_its_canonical_block_without_another_signature(self):
+        transaction=MainnetTransactions.__new__(MainnetTransactions)
+        transaction.rpc=Mock()
+        transaction.rpc.call.side_effect=[{'blockNumber':'0x1234'},None]
+        self.assertIsNone(transaction.confirmed({'transactionHash':'0x'+'1'*64}))
+
     def test_confirmed_interrupted_operation_is_persisted_without_another_signature(self):
         with tempfile.TemporaryDirectory() as directory:
             transaction=MainnetTransactions.__new__(MainnetTransactions)

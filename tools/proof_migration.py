@@ -43,6 +43,10 @@ class ProofMigration:
 
     def send(self, label, signature, *values):
         signer = self.proof_transactions if signature in ['copyLegacyProofs(bytes32[])','clearLegacyProofs(bytes32[])'] else self.t
+        if signature=='copyLegacyEpochs(uint48[])':
+            # Native execution charges differ from the read node's estimator.
+            # Bound the 32-epoch write using measured native storage costs.
+            return signer.send(label,self.ledger,self.data(signature,*values),gas_limit=7_000_000)
         return signer.send(label,self.ledger,self.data(signature,*values))
 
     def reads(self, calls):
