@@ -3,6 +3,7 @@ pragma solidity 0.8.38;
 
 import {Initializable} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
+import {SafeCast} from "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import {ZoruToken} from "./ZoruToken.sol";
 import {IZoruBeaconSource, IZoruWorkEngine} from "./IZoruMining.sol";
 import {IZoruUpgradeCoordinator} from "./IZoruUpgrade.sol";
@@ -13,6 +14,7 @@ import {IZoruUpgradeCoordinator} from "./IZoruUpgrade.sol";
 ///      All mining policy lives here, outside the immutable token. External
 ///      transparent proxy administration must remain independent of this code.
 contract ZoruLedger is Initializable {
+    using SafeCast for uint256;
     uint256 public constant CAP = 21_000_000 * 1e8;
     uint256 public constant INITIAL_BUDGET = 5 * 1e8;
     uint256 public constant HALVING_EPOCHS = 2_100_000;
@@ -38,11 +40,33 @@ contract ZoruLedger is Initializable {
         uint256 closesAt;
     }
 
+    /// @dev Legacy three-slot layout retained in-place for proxy storage compatibility.
     struct AcceptedProof {
         address beneficiary;
         uint48 epoch;
         uint256 indexPlusOne;
         bool claimed;
+    }
+
+    /// @dev New proof records fit in one EVM storage slot (31 of 32 bytes).
+    /// The uint32 index is bounded by MAX_PROOFS_PER_EPOCH in submit().
+    struct PackedAcceptedProof {
+        address beneficiary;
+        uint48 epoch;
+        uint32 indexPlusOne;
+        bool claimed;
+    }
+
+    /// @dev Three slots. Work estimates and permanent module addresses are
+    /// derived. Close times remain snapshots for clock-recovery safety.
+    struct PackedEpoch {
+        uint256 target;
+        bytes32 seed;
+        uint64 budget;
+        uint32 proofCount;
+        uint64 generation;
+        uint64 closesAt;
+        bool isSealed;
     }
 
     ZoruToken public token;
@@ -63,11 +87,33 @@ contract ZoruLedger is Initializable {
     bool public claimsPaused;
     bool private entered;
 
-    mapping(uint48 => Epoch) private epochs;
-    mapping(bytes32 => AcceptedProof) public proofs;
+    /// @custom:oz-renamed-from epochs
+    mapping(uint48 => Epoch) internal legacyEpochs;
+    /// @custom:oz-renamed-from proofs
+    /// @dev Reserved at the original mapping slot. Only the temporary migration
+    /// implementation accesses it; the final runtime uses compactProofs exclusively.
+    mapping(bytes32 => AcceptedProof) internal legacyProofs;
 
     uint256 public moduleGeneration;
     address public protocolAdmin;
+
+    // Appended after all existing state to preserve the deployed storage layout.
+    mapping(bytes32 => PackedAcceptedProof) internal compactProofs;
+
+    // Migration receipts remain reserved after the migration implementation is
+    // retired. They are never repurposed or read by the final runtime.
+    bytes32 internal proofMigrationInventoryHash;
+    uint256 internal proofMigrationExpected;
+    uint256 internal proofMigrationCopied;
+    uint256 internal proofMigrationCleared;
+
+    mapping(uint48 => PackedEpoch) internal compactEpochs;
+    bytes32 internal epochMigrationInventoryHash;
+    uint256 internal epochMigrationExpected;
+    uint256 internal epochMigrationCopied;
+    uint256 internal epochMigrationCleared;
+
+    uint256 public constant MAX_PROOFS_PER_EPOCH = type(uint32).max;
 
     error OnlyOwner();
     error Paused();
@@ -86,6 +132,7 @@ contract ZoruLedger is Initializable {
     error PermanentProxyAddresses();
     error UpgradePending();
     error OnlyCoordinator();
+    error ProofLimitReached();
 
     /// @dev The beneficiary field is an ADDRESS, not a verified human/device.
     ///      Clients may count DISTINCT addresses in logs; Sybil splitting is cheap.
@@ -145,8 +192,42 @@ contract ZoruLedger is Initializable {
         return index == NORMAL_REWARD_EPOCHS ? TERMINAL_DUST : 0;
     }
 
-    function epochInfo(uint48 epoch) external view returns (Epoch memory) {
-        return epochs[epoch];
+    function epochInfo(uint48 epoch) public view virtual returns (Epoch memory result) {
+        PackedEpoch storage state = compactEpochs[epoch];
+        if (state.target == 0) return result;
+        return Epoch(
+            state.target,
+            state.seed,
+            state.budget,
+            state.proofCount,
+            _epochWorkEstimate(state.target, state.proofCount),
+            address(engine),
+            state.isSealed,
+            address(beacon),
+            state.generation,
+            state.closesAt
+        );
+    }
+
+    function _epochWorkEstimate(uint256 target, uint256 proofCount) internal pure returns (uint256) {
+        if (proofCount == 0) return 0;
+        uint256 unit = type(uint256).max / target;
+        return unit > type(uint256).max / proofCount ? type(uint256).max : unit * proofCount;
+    }
+
+    /// @notice Canonical one-slot proof record, retaining the original lookup ABI.
+    function proofs(bytes32 digest)
+        public
+        view
+        virtual
+        returns (address beneficiary, uint48 epoch, uint256 indexPlusOne, bool claimed)
+    {
+        PackedAcceptedProof storage packed = compactProofs[digest];
+        return (packed.beneficiary, packed.epoch, uint256(packed.indexPlusOne), packed.claimed);
+    }
+
+    function _proofExists(bytes32 digest) internal view returns (bool) {
+        return compactProofs[digest].indexPlusOne != 0;
     }
 
     /// @notice One-time suite binding after all three proxy constructors finish.
@@ -187,15 +268,12 @@ contract ZoruLedger is Initializable {
         }
         if (block.timestamp >= launchTime) {
             uint48 current = epochNow();
-            Epoch storage active = epochs[current];
+            PackedEpoch storage active = compactEpochs[current];
             if (!emergency && hasOpened && current < lastOpenedEpoch) revert InvalidEpoch();
             if (!emergency && active.proofCount != 0) revert InvalidEpoch();
             if (active.target != 0 && !active.isSealed && (!hasOpened || current >= lastOpenedEpoch)) {
-                active.generation = revision;
+                active.generation = revision.toUint64();
                 active.seed = bytes32(0);
-                // Addresses themselves remain the original public proxies.
-                active.engine = address(engine);
-                active.beaconSource = address(beacon);
             }
             emit ModulesRecovered(current, address(engine), address(beacon), revision);
         }
@@ -215,7 +293,7 @@ contract ZoruLedger is Initializable {
     }
 
     function digestFor(uint48 epoch, bytes32 seed, address beneficiary, uint256 nonce) public view returns (bytes32) {
-        uint256 generation = epochs[epoch].generation;
+        uint256 generation = compactEpochs[epoch].generation;
         if (generation == 0) {
             generation = moduleGeneration;
         }
@@ -236,7 +314,7 @@ contract ZoruLedger is Initializable {
             if (firstShift >= 256 || initialTarget > (MAX_TARGET >> firstShift)) return MAX_TARGET;
             return initialTarget << firstShift;
         }
-        Epoch storage previous = epochs[lastOpenedEpoch];
+        PackedEpoch storage previous = compactEpochs[lastOpenedEpoch];
         uint256 target = previous.target;
         uint256 observed = previous.proofCount;
         uint256 candidate = Math.mulDiv(target, DESIRED_PROOFS, observed == 0 ? 1 : observed);
@@ -258,32 +336,30 @@ contract ZoruLedger is Initializable {
 
     function targetForEpoch(uint48 epoch) external view returns (uint256) {
         if (epoch != epochNow()) revert InvalidEpoch();
-        if ((hasOpened && epoch < lastOpenedEpoch) || epochs[epoch].isSealed) revert InvalidEpoch();
+        if ((hasOpened && epoch < lastOpenedEpoch) || compactEpochs[epoch].isSealed) revert InvalidEpoch();
         _checkWork(epoch);
-        return epochs[epoch].target == 0 ? _targetForNewEpoch(epoch) : epochs[epoch].target;
+        return compactEpochs[epoch].target == 0 ? _targetForNewEpoch(epoch) : compactEpochs[epoch].target;
     }
 
     /// @notice Clock-only progress needs neither proof nor a working beacon.
-    function openEpoch(uint48 epoch) external nonReentrant returns (uint256) {
+    function openEpoch(uint48 epoch) public virtual nonReentrant returns (uint256) {
         if (epoch != epochNow()) revert InvalidEpoch();
         return _openEpoch(epoch).target;
     }
 
-    function _openEpoch(uint48 epoch) internal returns (Epoch storage state) {
+    function _openEpoch(uint48 epoch) internal returns (PackedEpoch storage state) {
         _checkWork(epoch);
         if (hasOpened && epoch < lastOpenedEpoch) revert InvalidEpoch();
-        state = epochs[epoch];
+        state = compactEpochs[epoch];
         if (state.isSealed) revert InvalidEpoch();
         if (state.target != 0) return state;
         uint256 target = _targetForNewEpoch(epoch);
         state.target = target;
-        state.engine = address(engine);
-        state.beaconSource = address(beacon);
-        state.generation = moduleGeneration;
-        state.closesAt = launchTime + (uint256(epoch) + 1) * EPOCH_SECONDS;
+        state.generation = moduleGeneration.toUint64();
+        state.closesAt = (launchTime + (uint256(epoch) + 1) * EPOCH_SECONDS).toUint64();
         lastOpenedEpoch = epoch;
         hasOpened = true;
-        emit EpochOpened(epoch, target, state.engine, state.beaconSource, state.generation);
+        emit EpochOpened(epoch, target, address(engine), address(beacon), state.generation);
     }
 
     function fundedLiability() public view returns (uint256) {
@@ -303,23 +379,28 @@ contract ZoruLedger is Initializable {
 
     /// @notice Multiple proofs are accepted per epoch; no pending single winner.
     /// @dev Proof is subject to transaction inclusion time, not local discovery time.
-    function submit(uint48 epoch, address beneficiary, uint256 nonce) external nonReentrant returns (bytes32 digest) {
+    function submit(uint48 epoch, address beneficiary, uint256 nonce)
+        public
+        virtual
+        nonReentrant
+        returns (bytes32 digest)
+    {
         if (admissionPaused) revert Paused();
         if (token.issuer() != address(this)) revert InactiveIssuer();
         if (beneficiary == address(0) || epoch != epochNow()) revert InvalidEpoch();
-        Epoch storage state = _openEpoch(epoch);
+        PackedEpoch storage state = _openEpoch(epoch);
         bool first = state.proofCount == 0;
         if (state.seed == bytes32(0)) {
-            if (
-                IZoruBeaconSource(state.beaconSource).releaseTime{gas: MODULE_CALL_GAS}(epoch)
-                    != launchTime + uint256(epoch) * EPOCH_SECONDS
-            ) revert InvalidConfiguration();
-            state.seed = IZoruBeaconSource(state.beaconSource).verifiedSeed{gas: MODULE_CALL_GAS}(epoch);
+            if (beacon.releaseTime{gas: MODULE_CALL_GAS}(epoch) != launchTime + uint256(epoch) * EPOCH_SECONDS) {
+                revert InvalidConfiguration();
+            }
+            state.seed = beacon.verifiedSeed{gas: MODULE_CALL_GAS}(epoch);
             if (state.seed == bytes32(0)) revert InvalidProof();
         }
         digest = digestFor(epoch, state.seed, beneficiary, nonce);
-        if (proofs[digest].indexPlusOne != 0) revert DuplicateProof();
-        if (!IZoruWorkEngine(state.engine).valid{gas: MODULE_CALL_GAS}(digest, state.target)) revert InvalidProof();
+        if (_proofExists(digest)) revert DuplicateProof();
+        if (!engine.valid{gas: MODULE_CALL_GAS}(digest, state.target)) revert InvalidProof();
+        if (state.proofCount >= MAX_PROOFS_PER_EPOCH) revert ProofLimitReached();
         if (first) {
             uint256 budget = budgetForIndex(emissionIndex);
             uint256 pending = unfundedLiability();
@@ -327,17 +408,17 @@ contract ZoruLedger is Initializable {
             if (budget == 0 || pending > capacity || budget > capacity - pending || budget > CAP - allocatedSupply) {
                 revert NoMoreEmission();
             }
-            state.budget = budget;
+            state.budget = budget.toUint64();
             allocatedSupply += budget;
             emissionIndex++;
         }
         uint256 index = state.proofCount++;
-        proofs[digest] = AcceptedProof(beneficiary, epoch, index + 1, false);
+        // forge-lint: disable-next-line(unsafe-typecast)
+        compactProofs[digest] = PackedAcceptedProof(beneficiary, epoch, uint32(index + 1), false);
         // This is an expected-work estimate derived from accepted proofs, not CPU measurements.
         uint256 estimated = type(uint256).max / state.target;
         // Saturate telemetry rather than disable admission at extreme difficulty.
         // These counters are estimates and must not govern reward issuance.
-        state.verifiedWorkEstimate = _saturatingAdd(state.verifiedWorkEstimate, estimated);
         networkWorkEstimate = _saturatingAdd(networkWorkEstimate, estimated);
         totalProofs++;
         emit ProofAccepted(epoch, digest, beneficiary, index, state.generation);
@@ -348,8 +429,8 @@ contract ZoruLedger is Initializable {
     }
 
     /// @notice Independent of ongoing work in newer epochs. Caller funds gas.
-    function seal(uint48 epoch) external nonReentrant {
-        Epoch storage state = epochs[epoch];
+    function seal(uint48 epoch) public virtual nonReentrant {
+        PackedEpoch storage state = compactEpochs[epoch];
         if (state.target == 0 || block.timestamp < state.closesAt) revert EpochNotClosed();
         if (state.proofCount == 0 || state.isSealed) revert AlreadySealed();
         uint256 available = freeBalance();
@@ -363,19 +444,20 @@ contract ZoruLedger is Initializable {
         emit EpochSealed(epoch, state.budget, state.proofCount);
     }
 
-    function claim(bytes32 digest) external nonReentrant returns (uint256 amount) {
+    function claim(bytes32 digest) public virtual nonReentrant returns (uint256 amount) {
         if (claimsPaused) revert Paused();
         if (token.balanceOf(address(this)) < fundedLiability()) revert Insolvent();
-        AcceptedProof storage proof = proofs[digest];
-        if (proof.indexPlusOne == 0 || proof.claimed) revert NotClaimable();
-        Epoch storage state = epochs[proof.epoch];
+        PackedAcceptedProof storage packed = compactProofs[digest];
+        if (packed.indexPlusOne == 0 || packed.claimed) revert NotClaimable();
+        PackedEpoch storage state = compactEpochs[packed.epoch];
         if (!state.isSealed) revert NotClaimable();
-        uint256 index = proof.indexPlusOne - 1;
+        uint256 index = uint256(packed.indexPlusOne) - 1;
         amount =
             Math.mulDiv(state.budget, index + 1, state.proofCount) - Math.mulDiv(state.budget, index, state.proofCount);
-        proof.claimed = true;
+
+        packed.claimed = true;
         paidSupply += amount;
-        require(token.transfer(proof.beneficiary, amount), "ZORU_TRANSFER_FAILED");
-        emit RewardClaimed(proof.epoch, digest, proof.beneficiary, amount);
+        require(token.transfer(packed.beneficiary, amount), "ZORU_TRANSFER_FAILED");
+        emit RewardClaimed(packed.epoch, digest, packed.beneficiary, amount);
     }
 }

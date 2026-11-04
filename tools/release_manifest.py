@@ -2,13 +2,13 @@
 """Export build fingerprints and verify an explicit mainnet deployment."""
 import argparse
 import hashlib
+import http.client
 import json
 from pathlib import Path
 import shutil
 import subprocess
 import time
 import urllib.parse
-import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
 NAMES = {'token': 'ZoruToken', 'ledger': 'ZoruLedger', 'engine': 'ZoruKeccakEngine', 'beacon': 'ZoruDrandBeacon', 'admin': 'ZoruAdminAdapter'}
@@ -114,11 +114,19 @@ class Rpc:
         self.url = url
 
     def post(self, data, suffix=''):
-        request = urllib.request.Request(self.url.rstrip('/') + suffix, json.dumps(data).encode(),
-                                         {'Content-Type': 'application/json', 'Accept': 'application/json',
-                                          'User-Agent': 'ZoruMainnetManifest/1.0'})
-        with urllib.request.urlopen(request, timeout=12) as response:
+        url = urllib.parse.urlsplit(self.url.rstrip('/') + suffix)
+        connection = (http.client.HTTPSConnection if url.scheme == 'https' else http.client.HTTPConnection)(
+            url.hostname, url.port, timeout=12)
+        try:
+            connection.request('POST', url.path or '/', json.dumps(data),
+                               {'Content-Type': 'application/json', 'Accept': 'application/json',
+                                'User-Agent': 'ZoruMainnetManifest/1.0'})
+            response = connection.getresponse()
+            if response.status != 200:
+                raise ValueError('RPC endpoint rejected the request')
             body = response.read(8*1024*1024+1)
+        finally:
+            connection.close()
         if len(body) > 8*1024*1024:
             raise ValueError('RPC response too large')
         time.sleep(0.08)

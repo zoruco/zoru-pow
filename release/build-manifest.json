@@ -11,39 +11,48 @@
     "contracts/src/IZoruMining.sol": "a40f89d764ff7b3f2708a4502c50894f36198a363cafe150e6868bcd04709e51",
     "contracts/src/IZoruUpgrade.sol": "aa7a44a3e9edbad3f5ec35879b8c7cc3930307b71a932b46748f884e110b342b",
     "contracts/src/ZoruAdminAdapter.sol": "8bb04176ee301587a27f0e06e8259cb016522f2ddd8ce2cf39ce6be07d4ae62c",
-    "contracts/src/ZoruDrandBeacon.sol": "d4cf7cab561bee22e94d10172ef6b8ead063a25eeee497b0dc1c7051124e2506",
+    "contracts/src/ZoruDrandBeacon.sol": "f31ab5eb3d2539f6d6769bd8c79a59e0707109b6213bfd70e2c61e7458a56a8d",
+    "contracts/src/ZoruDrandBeaconMigration.sol": "a6a898dbb115c4984d68938c292b834ee15c29d45d16e963f3c13fbac5e7979b",
     "contracts/src/ZoruKeccakEngine.sol": "d583f68864402552c07630cc75d361bbc9baef5a88c13780e20104926f2489a5",
-    "contracts/src/ZoruLedger.sol": "1b5929a84c414622c44816a51d1c91234510fede142201b89f77904fec6f17eb",
+    "contracts/src/ZoruLedger.sol": "853e4d5f2ca7d22e516342ef8ac869f3767b340e60574be51741cd034755c883",
+    "contracts/src/ZoruLedgerMigration.sol": "68ff66afba7fa189763bd5a4ca8ee5d85aee50663db23ca0d4ba2c3af26302e1",
     "contracts/src/ZoruToken.sol": "24c0fd1c27453ded208fc8947f097b41cc73c6e4eb8430b60bc8d0c8500bd796",
     "contracts/test/CryptoOracleVectors.sol": "f17d79fd0a1a8b96b0d95aef3fa29105f545f8540ddba57ff3d61e34c4d474b0",
     "contracts/test/DeepTestHarness.sol": "664d2a54c76469f19c372c7e4e7ee430a1bd1e955099d535d4e8e7800d2842d3",
     "contracts/test/MockBeacon.sol": "2be549b5bceb1a29c1afa5ecf0b09d18ef3af3c7789f26eea13077f900decbe8",
+    "contracts/test/NativeRamProbe.sol": "e7d2c6d653260e547cada7a73a39c0178d17fced132f4b31dcb162a1c2ed196f",
     "contracts/test/SuiteSupport.sol": "16cf6198ae63ac986ca8c3e24a78fdc432cd944952dcf742c5560d04321129af",
     "contracts/test/ZoruAddressStability.t.sol": "408a7f2fc77b92d5fd2c5beb4d36cb492121889175402ddb684ede7bbfdb319e",
     "contracts/test/ZoruAdminRuntimeProbe.sol": "d8fded88741f709e7cd421301c4a94156f69ef8257acd73394345020f5533562",
     "contracts/test/ZoruAdversarial.t.sol": "cd5fec0a7cf6918f8273c772464a88bba1b9ac87604bd2c638bbd452481dd6a3",
-    "contracts/test/ZoruBeaconRuntimeProbe.sol": "bf96a1e4bfb19c891c8a95e4104606d86cf7c8f43d1adbf940fce0120c5f7006",
+    "contracts/test/ZoruBeaconRuntimeProbe.sol": "8ac6e41a94f1e6d91a23a0e589e4dcaa0c669e5f8323d13b0919f552b76f933d",
+    "contracts/test/ZoruBeaconStorage.t.sol": "4be8230dd50c07f358d12d1bc1c5e717e16a472895ab76b4c91d8ed0c9798375",
     "contracts/test/ZoruCacheRecovery.t.sol": "87ba89825ce11423f9854553e38d3e76ef39344fdfb492e6e4813a62949fd178",
-    "contracts/test/ZoruCacheSuiteRecovery.t.sol": "9ac4efc6930b38aae7cfc64f01adf75dea561769137a260bee4b92ea33c0cc53",
-    "contracts/test/ZoruCryptoVerification.t.sol": "a25a6a2e2c7ae99bf46820b9793b8c8065d22a3a66870c38425e7aeeb1352904",
+    "contracts/test/ZoruCacheSuiteRecovery.t.sol": "b22085d3845bfd97e63d472d350e2d1c8fd053d543c1f6c301d595918e55eb5e",
+    "contracts/test/ZoruCryptoVerification.t.sol": "d15b92adfe238cc3da133102aa27dcb7e528f69b5adbfc4cdee83e7c8a648886",
     "contracts/test/ZoruDeepCases.t.sol": "3ee186a86bc1b3b601bb6322cd89d57298e1f258a38c472bf7ef8741a5a59804",
     "contracts/test/ZoruDrandIntegration.t.sol": "c38f3e83895998982f0f73d249e49c1be02ab59ce4b9a76b263b0229e23ff179",
     "contracts/test/ZoruEmissionArithmetic.t.sol": "ed47844d5371aa1d658edae653d6da7ad7aa92b971700f8567b8afcc475b4a3d",
     "contracts/test/ZoruFutureMultisig.t.sol": "e2bda1a77ed064a4403eef278ca1431ae4927fe626651f70814b91fa1c17b7de",
     "contracts/test/ZoruInvariant.t.sol": "60f0376e65cc73cc38145a63028b07c2514cddfc91fd6179c8178efbc95a924a",
+    "contracts/test/ZoruLoadProbe.sol": "4e731429bb8f28db54ea3b6ae0da957872a00191e19f1b63a3cf9c650d5a0ca5",
     "contracts/test/ZoruLongTerm.t.sol": "6d807be20a29210489b522c77c450afedba6be659e84ad403b6137b335338d1c",
+    "contracts/test/ZoruProofStorage.t.sol": "db8089a62f55bae91f25b54641bc230d42375d2f21aba7a5f755c65707a1a98c",
     "contracts/test/ZoruProtocol.t.sol": "10a940a82e22c25031a5aac4e55084f75c33cb3ae1e3b685c95c15dab2af63f8",
     "contracts/test/ZoruRecovery.t.sol": "8d94914912356e124c78faf2052ed0a59e10a70b322b65430ff557a3a2c02fa1",
     "contracts/test/ZoruRecoveryMore.t.sol": "6ad2636e963e8c91df8b9defdbb903062f2daf641db0b1c9d37ffbc5a7bc4073",
+    "contracts/test/ZoruScale.t.sol": "b080e4214deb55738ce2ea7d990ec80ee257e36bc4867cde74bcfe2977734301",
     "contracts/test/ZoruSuiteRuntimeProbe.sol": "cb0b2fa00e9ba73c384a5ffcfa6c8a57b323fb5aa0981af7086cc843ffdcda28",
     "contracts/test/ZoruTokenRuntimeProbe.sol": "e200d6df50b92dc10adc3f8ed4eeaeffe684853f57ce818280361b46f9fc2fe5",
+    "contracts/test/fixtures/ZoruDrandBeaconOriginal.sol": "ed868264d6f703039e89ef67da87b56036249525e6a3e6d09c62e006659c3600",
+    "contracts/test/fixtures/ZoruLedgerV1.sol": "f08bae50c35e8f47c323c58c84b4296816f49021a646d8d985c7268fdfd0c475",
     "contracts/vendor/evmnet/BLS.sol": "648f351a44699f5e23ba035d388617891a820ddb84f423af7875ed9d1ac30fa8",
     "contracts/vendor/evmnet/ModExp.sol": "47d46311eb25d86de97b335f9c58f936164a1311e54f2519b33225084662498a",
     "contracts/vendor/evmnet/Precompiles.sol": "ca7ca28f0811a20e0b67d0c7efccea0a185e05ec749ec72060ffd26769183c4f",
     "contracts/foundry.toml": "7871913e3339a5f5b6acc607b3d294beb7fc9af92fcc6c7860ec8fbe5de5c5b7",
-    "package.json": "d69e9b534b769c56ae5422fab854f1b6048675e3b7cace1b839b025ea521d4a0",
-    "package-lock.json": "6e468ef612a2375da42fe14941c25994a4e4db8792d1475b56a170663002a39d",
-    "tools/release_manifest.py": "c90827ad62a06b796fbc48bda62dd5895851ccc2898d86cef182794ed2f48c81",
+    "package.json": "bf8eb7744fe24712e2373e68dcaf964f6b90e802d06744ff1655cf48077c5bd8",
+    "package-lock.json": "62341303a7e9c1a286c8b1955abaa5c18a7544f67c4e60cc13715f14f39be450",
+    "tools/release_manifest.py": "ccaa6f88f27f4635c9b68e1d7376072cc20c41b13f641cb70d23c7a59b232203",
     "tools/test_release_manifest.py": "740413478564be95ee675162eb4a5fae267dbb41836cf063e3eb11fc338c7471"
   },
   "contracts": {
@@ -165,39 +174,39 @@
     },
     "ledger": {
       "contract": "ZoruLedger",
-      "creationSha256": "b77fedeafb133d7f297a974d2381820e9788afe16e2953b7276b2b9122e2a987",
-      "runtimeTemplateSha256": "bbf9346ab872d5938d0a599af1e44a9cff18aeb3e708010b8a32e3bafb7802d8",
-      "creationBytes": 11394,
-      "runtimeBytes": 11180,
-      "abiSha256": "774562e1d099e0e2ff780d82f57b0195558d566e411034986bf3d273621fe959",
+      "creationSha256": "ae37bf8631a9eca7de867f6f9bed4bda049333caa80e563d9a572b867897a052",
+      "runtimeTemplateSha256": "b51afdb6c0de80fdfb623dafd172f1d8f1530ee31a1fa6ea68bb12adb535f351",
+      "creationBytes": 12047,
+      "runtimeBytes": 11833,
+      "abiSha256": "3137aa4bca58b010553fb94ecf9dc2fae0fa61c6e2c9affc94bc48378ea9c518",
       "storageLayout": {
         "storage": [
           {
-            "astId": 5128,
+            "astId": 6925,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "token",
             "offset": 0,
             "slot": "0",
-            "type": "t_contract(ZoruToken)7006"
+            "type": "t_contract(ZoruToken)8946"
           },
           {
-            "astId": 5131,
+            "astId": 6928,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "beacon",
             "offset": 0,
             "slot": "1",
-            "type": "t_contract(IZoruBeaconSource)4928"
+            "type": "t_contract(IZoruBeaconSource)6693"
           },
           {
-            "astId": 5134,
+            "astId": 6931,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "engine",
             "offset": 0,
             "slot": "2",
-            "type": "t_contract(IZoruWorkEngine)4938"
+            "type": "t_contract(IZoruWorkEngine)6703"
           },
           {
-            "astId": 5136,
+            "astId": 6933,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "launchTime",
             "offset": 0,
@@ -205,7 +214,7 @@
             "type": "t_uint256"
           },
           {
-            "astId": 5138,
+            "astId": 6935,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "initialTarget",
             "offset": 0,
@@ -213,7 +222,7 @@
             "type": "t_uint256"
           },
           {
-            "astId": 5140,
+            "astId": 6937,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "emissionIndex",
             "offset": 0,
@@ -221,7 +230,7 @@
             "type": "t_uint256"
           },
           {
-            "astId": 5142,
+            "astId": 6939,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "allocatedSupply",
             "offset": 0,
@@ -229,7 +238,7 @@
             "type": "t_uint256"
           },
           {
-            "astId": 5145,
+            "astId": 6942,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "fundedSupply",
             "offset": 0,
@@ -237,7 +246,7 @@
             "type": "t_uint256"
           },
           {
-            "astId": 5147,
+            "astId": 6944,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "paidSupply",
             "offset": 0,
@@ -245,7 +254,7 @@
             "type": "t_uint256"
           },
           {
-            "astId": 5149,
+            "astId": 6946,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "totalProofs",
             "offset": 0,
@@ -253,7 +262,7 @@
             "type": "t_uint256"
           },
           {
-            "astId": 5151,
+            "astId": 6948,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "networkWorkEstimate",
             "offset": 0,
@@ -261,7 +270,7 @@
             "type": "t_uint256"
           },
           {
-            "astId": 5153,
+            "astId": 6950,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "lastOpenedEpoch",
             "offset": 0,
@@ -269,7 +278,7 @@
             "type": "t_uint48"
           },
           {
-            "astId": 5155,
+            "astId": 6952,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "hasOpened",
             "offset": 6,
@@ -277,7 +286,7 @@
             "type": "t_bool"
           },
           {
-            "astId": 5157,
+            "astId": 6954,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "admissionPaused",
             "offset": 7,
@@ -285,7 +294,7 @@
             "type": "t_bool"
           },
           {
-            "astId": 5159,
+            "astId": 6956,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "claimsPaused",
             "offset": 8,
@@ -293,7 +302,7 @@
             "type": "t_bool"
           },
           {
-            "astId": 5161,
+            "astId": 6958,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "entered",
             "offset": 9,
@@ -301,23 +310,23 @@
             "type": "t_bool"
           },
           {
-            "astId": 5166,
+            "astId": 6964,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
-            "label": "epochs",
+            "label": "legacyEpochs",
             "offset": 0,
             "slot": "12",
-            "type": "t_mapping(t_uint48,t_struct(Epoch)5116_storage)"
+            "type": "t_mapping(t_uint48,t_struct(Epoch)6886_storage)"
           },
           {
-            "astId": 5171,
+            "astId": 6970,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
-            "label": "proofs",
+            "label": "legacyProofs",
             "offset": 0,
             "slot": "13",
-            "type": "t_mapping(t_bytes32,t_struct(AcceptedProof)5125_storage)"
+            "type": "t_mapping(t_bytes32,t_struct(AcceptedProof)6896_storage)"
           },
           {
-            "astId": 5173,
+            "astId": 6972,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "moduleGeneration",
             "offset": 0,
@@ -325,12 +334,92 @@
             "type": "t_uint256"
           },
           {
-            "astId": 5175,
+            "astId": 6974,
             "contract": "src/ZoruLedger.sol:ZoruLedger",
             "label": "protocolAdmin",
             "offset": 0,
             "slot": "15",
             "type": "t_address"
+          },
+          {
+            "astId": 6979,
+            "contract": "src/ZoruLedger.sol:ZoruLedger",
+            "label": "compactProofs",
+            "offset": 0,
+            "slot": "16",
+            "type": "t_mapping(t_bytes32,t_struct(PackedAcceptedProof)6906_storage)"
+          },
+          {
+            "astId": 6981,
+            "contract": "src/ZoruLedger.sol:ZoruLedger",
+            "label": "proofMigrationInventoryHash",
+            "offset": 0,
+            "slot": "17",
+            "type": "t_bytes32"
+          },
+          {
+            "astId": 6983,
+            "contract": "src/ZoruLedger.sol:ZoruLedger",
+            "label": "proofMigrationExpected",
+            "offset": 0,
+            "slot": "18",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 6985,
+            "contract": "src/ZoruLedger.sol:ZoruLedger",
+            "label": "proofMigrationCopied",
+            "offset": 0,
+            "slot": "19",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 6987,
+            "contract": "src/ZoruLedger.sol:ZoruLedger",
+            "label": "proofMigrationCleared",
+            "offset": 0,
+            "slot": "20",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 6992,
+            "contract": "src/ZoruLedger.sol:ZoruLedger",
+            "label": "compactEpochs",
+            "offset": 0,
+            "slot": "21",
+            "type": "t_mapping(t_uint48,t_struct(PackedEpoch)6922_storage)"
+          },
+          {
+            "astId": 6994,
+            "contract": "src/ZoruLedger.sol:ZoruLedger",
+            "label": "epochMigrationInventoryHash",
+            "offset": 0,
+            "slot": "22",
+            "type": "t_bytes32"
+          },
+          {
+            "astId": 6996,
+            "contract": "src/ZoruLedger.sol:ZoruLedger",
+            "label": "epochMigrationExpected",
+            "offset": 0,
+            "slot": "23",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 6998,
+            "contract": "src/ZoruLedger.sol:ZoruLedger",
+            "label": "epochMigrationCopied",
+            "offset": 0,
+            "slot": "24",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 7000,
+            "contract": "src/ZoruLedger.sol:ZoruLedger",
+            "label": "epochMigrationCleared",
+            "offset": 0,
+            "slot": "25",
+            "type": "t_uint256"
           }
         ],
         "types": {
@@ -349,42 +438,56 @@
             "label": "bytes32",
             "numberOfBytes": "32"
           },
-          "t_contract(IZoruBeaconSource)4928": {
+          "t_contract(IZoruBeaconSource)6693": {
             "encoding": "inplace",
             "label": "contract IZoruBeaconSource",
             "numberOfBytes": "20"
           },
-          "t_contract(IZoruWorkEngine)4938": {
+          "t_contract(IZoruWorkEngine)6703": {
             "encoding": "inplace",
             "label": "contract IZoruWorkEngine",
             "numberOfBytes": "20"
           },
-          "t_contract(ZoruToken)7006": {
+          "t_contract(ZoruToken)8946": {
             "encoding": "inplace",
             "label": "contract ZoruToken",
             "numberOfBytes": "20"
           },
-          "t_mapping(t_bytes32,t_struct(AcceptedProof)5125_storage)": {
+          "t_mapping(t_bytes32,t_struct(AcceptedProof)6896_storage)": {
             "encoding": "mapping",
             "key": "t_bytes32",
             "label": "mapping(bytes32 => struct ZoruLedger.AcceptedProof)",
             "numberOfBytes": "32",
-            "value": "t_struct(AcceptedProof)5125_storage"
+            "value": "t_struct(AcceptedProof)6896_storage"
           },
-          "t_mapping(t_uint48,t_struct(Epoch)5116_storage)": {
+          "t_mapping(t_bytes32,t_struct(PackedAcceptedProof)6906_storage)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => struct ZoruLedger.PackedAcceptedProof)",
+            "numberOfBytes": "32",
+            "value": "t_struct(PackedAcceptedProof)6906_storage"
+          },
+          "t_mapping(t_uint48,t_struct(Epoch)6886_storage)": {
             "encoding": "mapping",
             "key": "t_uint48",
             "label": "mapping(uint48 => struct ZoruLedger.Epoch)",
             "numberOfBytes": "32",
-            "value": "t_struct(Epoch)5116_storage"
+            "value": "t_struct(Epoch)6886_storage"
           },
-          "t_struct(AcceptedProof)5125_storage": {
+          "t_mapping(t_uint48,t_struct(PackedEpoch)6922_storage)": {
+            "encoding": "mapping",
+            "key": "t_uint48",
+            "label": "mapping(uint48 => struct ZoruLedger.PackedEpoch)",
+            "numberOfBytes": "32",
+            "value": "t_struct(PackedEpoch)6922_storage"
+          },
+          "t_struct(AcceptedProof)6896_storage": {
             "encoding": "inplace",
             "label": "struct ZoruLedger.AcceptedProof",
             "numberOfBytes": "96",
             "members": [
               {
-                "astId": 5118,
+                "astId": 6889,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "beneficiary",
                 "offset": 0,
@@ -392,7 +495,7 @@
                 "type": "t_address"
               },
               {
-                "astId": 5120,
+                "astId": 6891,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "epoch",
                 "offset": 20,
@@ -400,7 +503,7 @@
                 "type": "t_uint48"
               },
               {
-                "astId": 5122,
+                "astId": 6893,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "indexPlusOne",
                 "offset": 0,
@@ -408,7 +511,7 @@
                 "type": "t_uint256"
               },
               {
-                "astId": 5124,
+                "astId": 6895,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "claimed",
                 "offset": 0,
@@ -417,13 +520,13 @@
               }
             ]
           },
-          "t_struct(Epoch)5116_storage": {
+          "t_struct(Epoch)6886_storage": {
             "encoding": "inplace",
             "label": "struct ZoruLedger.Epoch",
             "numberOfBytes": "288",
             "members": [
               {
-                "astId": 5097,
+                "astId": 6867,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "target",
                 "offset": 0,
@@ -431,7 +534,7 @@
                 "type": "t_uint256"
               },
               {
-                "astId": 5099,
+                "astId": 6869,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "seed",
                 "offset": 0,
@@ -439,7 +542,7 @@
                 "type": "t_bytes32"
               },
               {
-                "astId": 5101,
+                "astId": 6871,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "budget",
                 "offset": 0,
@@ -447,7 +550,7 @@
                 "type": "t_uint256"
               },
               {
-                "astId": 5103,
+                "astId": 6873,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "proofCount",
                 "offset": 0,
@@ -455,7 +558,7 @@
                 "type": "t_uint256"
               },
               {
-                "astId": 5105,
+                "astId": 6875,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "verifiedWorkEstimate",
                 "offset": 0,
@@ -463,7 +566,7 @@
                 "type": "t_uint256"
               },
               {
-                "astId": 5107,
+                "astId": 6877,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "engine",
                 "offset": 0,
@@ -471,7 +574,7 @@
                 "type": "t_address"
               },
               {
-                "astId": 5109,
+                "astId": 6879,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "isSealed",
                 "offset": 20,
@@ -479,7 +582,7 @@
                 "type": "t_bool"
               },
               {
-                "astId": 5111,
+                "astId": 6881,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "beaconSource",
                 "offset": 0,
@@ -487,7 +590,7 @@
                 "type": "t_address"
               },
               {
-                "astId": 5113,
+                "astId": 6883,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "generation",
                 "offset": 0,
@@ -495,7 +598,7 @@
                 "type": "t_uint256"
               },
               {
-                "astId": 5115,
+                "astId": 6885,
                 "contract": "src/ZoruLedger.sol:ZoruLedger",
                 "label": "closesAt",
                 "offset": 0,
@@ -504,15 +607,127 @@
               }
             ]
           },
+          "t_struct(PackedAcceptedProof)6906_storage": {
+            "encoding": "inplace",
+            "label": "struct ZoruLedger.PackedAcceptedProof",
+            "numberOfBytes": "32",
+            "members": [
+              {
+                "astId": 6899,
+                "contract": "src/ZoruLedger.sol:ZoruLedger",
+                "label": "beneficiary",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_address"
+              },
+              {
+                "astId": 6901,
+                "contract": "src/ZoruLedger.sol:ZoruLedger",
+                "label": "epoch",
+                "offset": 20,
+                "slot": "0",
+                "type": "t_uint48"
+              },
+              {
+                "astId": 6903,
+                "contract": "src/ZoruLedger.sol:ZoruLedger",
+                "label": "indexPlusOne",
+                "offset": 26,
+                "slot": "0",
+                "type": "t_uint32"
+              },
+              {
+                "astId": 6905,
+                "contract": "src/ZoruLedger.sol:ZoruLedger",
+                "label": "claimed",
+                "offset": 30,
+                "slot": "0",
+                "type": "t_bool"
+              }
+            ]
+          },
+          "t_struct(PackedEpoch)6922_storage": {
+            "encoding": "inplace",
+            "label": "struct ZoruLedger.PackedEpoch",
+            "numberOfBytes": "96",
+            "members": [
+              {
+                "astId": 6909,
+                "contract": "src/ZoruLedger.sol:ZoruLedger",
+                "label": "target",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_uint256"
+              },
+              {
+                "astId": 6911,
+                "contract": "src/ZoruLedger.sol:ZoruLedger",
+                "label": "seed",
+                "offset": 0,
+                "slot": "1",
+                "type": "t_bytes32"
+              },
+              {
+                "astId": 6913,
+                "contract": "src/ZoruLedger.sol:ZoruLedger",
+                "label": "budget",
+                "offset": 0,
+                "slot": "2",
+                "type": "t_uint64"
+              },
+              {
+                "astId": 6915,
+                "contract": "src/ZoruLedger.sol:ZoruLedger",
+                "label": "proofCount",
+                "offset": 8,
+                "slot": "2",
+                "type": "t_uint32"
+              },
+              {
+                "astId": 6917,
+                "contract": "src/ZoruLedger.sol:ZoruLedger",
+                "label": "generation",
+                "offset": 12,
+                "slot": "2",
+                "type": "t_uint64"
+              },
+              {
+                "astId": 6919,
+                "contract": "src/ZoruLedger.sol:ZoruLedger",
+                "label": "closesAt",
+                "offset": 20,
+                "slot": "2",
+                "type": "t_uint64"
+              },
+              {
+                "astId": 6921,
+                "contract": "src/ZoruLedger.sol:ZoruLedger",
+                "label": "isSealed",
+                "offset": 28,
+                "slot": "2",
+                "type": "t_bool"
+              }
+            ]
+          },
           "t_uint256": {
             "encoding": "inplace",
             "label": "uint256",
             "numberOfBytes": "32"
           },
+          "t_uint32": {
+            "encoding": "inplace",
+            "label": "uint32",
+            "numberOfBytes": "4"
+          },
           "t_uint48": {
             "encoding": "inplace",
             "label": "uint48",
             "numberOfBytes": "6"
+          },
+          "t_uint64": {
+            "encoding": "inplace",
+            "label": "uint64",
+            "numberOfBytes": "8"
           }
         }
       },
@@ -533,10 +748,10 @@
     },
     "beacon": {
       "contract": "ZoruDrandBeacon",
-      "creationSha256": "ba8305e022b7f4eb4fab30468ca331e88c121ebdae76925a421570e360ea6fd4",
-      "runtimeTemplateSha256": "41b5bd21da0a08146f0189f8c54ca343061ca151f3a36e576cc26690b53a8dda",
-      "creationBytes": 11173,
-      "runtimeBytes": 10959,
+      "creationSha256": "6fe3ab81f1b3b8feecf7edb79fd37fd1fcb45af5de6d7604c515e23099b1a806",
+      "runtimeTemplateSha256": "c0be3fbb8029934d28c8d60d24491c9ed042d7c122865c2e643b3a7207c2b51d",
+      "creationBytes": 11207,
+      "runtimeBytes": 10993,
       "abiSha256": "1b49d60059c3bbcaa11f55f4f4db0f1e54bfddd657acb0e3f2568f1eb39d2a76",
       "storageLayout": {
         "storage": [
@@ -571,9 +786,46 @@
             "offset": 0,
             "slot": "3",
             "type": "t_mapping(t_uint48,t_bytes32)"
+          },
+          {
+            "astId": 358,
+            "contract": "src/ZoruDrandBeacon.sol:ZoruDrandBeacon",
+            "label": "activeSeed",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_bytes32"
+          },
+          {
+            "astId": 360,
+            "contract": "src/ZoruDrandBeacon.sol:ZoruDrandBeacon",
+            "label": "activeEpoch",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_uint48"
+          },
+          {
+            "astId": 362,
+            "contract": "src/ZoruDrandBeacon.sol:ZoruDrandBeacon",
+            "label": "hasActiveSeed",
+            "offset": 6,
+            "slot": "5",
+            "type": "t_bool"
+          },
+          {
+            "astId": 364,
+            "contract": "src/ZoruDrandBeacon.sol:ZoruDrandBeacon",
+            "label": "activeTrust",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_bytes32"
           }
         ],
         "types": {
+          "t_bool": {
+            "encoding": "inplace",
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
           "t_bytes32": {
             "encoding": "inplace",
             "label": "bytes32",

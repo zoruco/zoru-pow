@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "validator": "@openzeppelin/upgrades-core",
+  "version": "1.47.0",
+  "compiler": "0.8.38",
+  "unsafeOverrides": [],
+  "comparisons": [
+    "released Ledger -> original fixture",
+    "original Ledger -> migration",
+    "migration Ledger -> final",
+    "released Beacon -> original fixture",
+    "original Beacon -> migration",
+    "migration Beacon -> final"
+  ],
+  "historicalProofMappingSlot": "13",
+  "compactProofMappingSlot": "16",
+  "contracts": [
+    "test/fixtures/ZoruLedgerV1.sol:ZoruLedgerV1",
+    "src/ZoruLedgerMigration.sol:ZoruLedgerMigration",
+    "src/ZoruLedger.sol:ZoruLedger",
+    "test/fixtures/ZoruDrandBeaconOriginal.sol:ZoruDrandBeaconOriginal",
+    "src/ZoruDrandBeaconMigration.sol:ZoruDrandBeaconMigration",
+    "src/ZoruDrandBeacon.sol:ZoruDrandBeacon"
+  ]
+}

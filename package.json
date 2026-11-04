@@ -6,7 +6,8 @@
     "node": ">=24.18.0"
   },
   "devDependencies": {
-    "@openzeppelin/contracts": "5.7.0"
+    "@openzeppelin/contracts": "5.7.0",
+    "@openzeppelin/upgrades-core": "1.47.0"
   },
   "type": "module"
 }

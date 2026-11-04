@@ -1,0 +1,34 @@
+{
+  "status": "PASS_MAINNET_STATE_FORK_ONLY",
+  "mainnetTransactionsSent": 0,
+  "blockNumber": 11599032,
+  "blockHash": "0x56e3cbd761706ad741bd751e77584e1169040512092a16441ea681ad851fa7dc",
+  "inventorySha256": "4d5b62a750f9d45a6d56d1052e1284d0e18ad80eb5a6982cbf96777780238dc1",
+  "proofsVerified": 6892,
+  "epochsVerified": 3057,
+  "beaconCachesCleared": 5295,
+  "historicalUnclaimedProofsPaid": 22,
+  "historicalUnclaimedBaseUnitsPaid": 6000000000,
+  "interruptedMigrationResumed": true,
+  "proxyAddresses": {
+    "ledger": "0xff53a9079c2853c39c5adbfca788cb0f12acff03",
+    "engine": "0x9ed52c07691cd26758ed1ebe05d86698a9e54e8c",
+    "beacon": "0x562249b5c3922fafa31f350efdb89e4f3f9a82fe"
+  },
+  "transactions": 837,
+  "scope": "Local Anvil mainnet-state fork; no production key and no production transaction",
+  "batchSize": 32,
+  "gasByOperation": {
+    "other": 14065018,
+    "proofs": 361336504,
+    "epochs": 417360527,
+    "beacon": 55175007
+  },
+  "maximumGasPerTransaction": {
+    "other": 2759599,
+    "proofs": 1171567,
+    "epochs": 2919675,
+    "beacon": 333384
+  },
+  "originalNativeLedgerRows": 48184
+}

@@ -31,9 +31,46 @@
       "offset": 0,
       "slot": "3",
       "type": "t_mapping(t_uint48,t_bytes32)"
+    },
+    {
+      "astId": 358,
+      "contract": "src/ZoruDrandBeacon.sol:ZoruDrandBeacon",
+      "label": "activeSeed",
+      "offset": 0,
+      "slot": "4",
+      "type": "t_bytes32"
+    },
+    {
+      "astId": 360,
+      "contract": "src/ZoruDrandBeacon.sol:ZoruDrandBeacon",
+      "label": "activeEpoch",
+      "offset": 0,
+      "slot": "5",
+      "type": "t_uint48"
+    },
+    {
+      "astId": 362,
+      "contract": "src/ZoruDrandBeacon.sol:ZoruDrandBeacon",
+      "label": "hasActiveSeed",
+      "offset": 6,
+      "slot": "5",
+      "type": "t_bool"
+    },
+    {
+      "astId": 364,
+      "contract": "src/ZoruDrandBeacon.sol:ZoruDrandBeacon",
+      "label": "activeTrust",
+      "offset": 0,
+      "slot": "6",
+      "type": "t_bytes32"
     }
   ],
   "types": {
+    "t_bool": {
+      "encoding": "inplace",
+      "label": "bool",
+      "numberOfBytes": "1"
+    },
     "t_bytes32": {
       "encoding": "inplace",
       "label": "bytes32",

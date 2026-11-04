@@ -93,7 +93,7 @@ contract ZoruCryptoVerificationTest {
     function testLengthsCoordinatesSwapAndRoundReplayReject() public {
         (uint64 round, bytes memory sig,,) = CryptoOracleVectors.roundVector(0);
         (ZoruDrandBeacon beacon,,) = make(round);
-        vm.warp(beacon.releaseTime(2));
+        vm.warp(beacon.releaseTime(0));
         uint256[7] memory boundaries = [uint256(0), 1, P - 1, P, P + 1, Q, type(uint256).max];
         for (uint256 i; i < boundaries.length; ++i) {
             for (uint256 j; j < boundaries.length; ++j) {

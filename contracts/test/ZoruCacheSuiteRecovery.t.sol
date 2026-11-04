@@ -173,7 +173,13 @@ contract ZoruCacheSuiteRecoveryTest {
         require(!admin.recoveryRequired() && admin.suiteRevision() == 2, "normal upgrade complete");
         require(beacon.cacheTrustId() != priorDomain && beacon.verifiedSeed(0) == bytes32(0),
             "automatic cache retirement at activation");
-        require(publish(0) == expected, "authenticated republication after upgrade");
+        (, bytes memory expiredSignature,,) = CryptoOracleVectors.roundVector(0);
+        (bool expiredAccepted,) = address(beacon).call(
+            abi.encodeCall(ZoruDrandBeacon.publish, (uint48(0), expiredSignature))
+        );
+        require(!expiredAccepted, "expired epoch publication admitted");
+        bytes32 current = publish(1);
+        require(beacon.verifiedSeed(1) == current, "current epoch authenticates after upgrade");
     }
 
     function testBrokenScheduledUpgradeRevertsAtomicallyWithoutStrandingCache() public {

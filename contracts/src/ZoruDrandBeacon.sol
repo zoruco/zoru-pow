@@ -27,10 +27,17 @@ contract ZoruDrandBeacon is IZoruBeaconSource, Initializable {
     string public constant DST = "BLS_SIG_BN254G1_XMD:KECCAK-256_SVDW_RO_NUL_";
 
     // Keep the original cache at slot 0. Config is proxy storage, not code immutables.
-    mapping(uint48 => bytes32) private cachedSeed;
+    mapping(uint48 => bytes32) internal cachedSeed;
     uint256 public launchTime;
     uint64 public launchRound;
-    mapping(uint48 => bytes32) private cachedConfig;
+    mapping(uint48 => bytes32) internal cachedConfig;
+
+    // Only the current epoch needs a beacon cache. Historical mining snapshots
+    // retain their authenticated seed in the Ledger and in publication events.
+    bytes32 private activeSeed;
+    uint48 private activeEpoch;
+    bool private hasActiveSeed;
+    bytes32 private activeTrust;
 
     error InvalidLaunch();
     error InvalidSignatureLength();
@@ -102,7 +109,7 @@ contract ZoruDrandBeacon is IZoruBeaconSource, Initializable {
     }
 
     function verifiedSeed(uint48 epoch) external view override returns (bytes32) {
-        return cachedConfig[epoch] == cacheTrustId() ? cachedSeed[epoch] : bytes32(0);
+        return hasActiveSeed && activeEpoch == epoch && activeTrust == cacheTrustId() ? activeSeed : bytes32(0);
     }
 
     /// @notice Clears selected cached results during an owner-authorized proxy upgrade.
@@ -115,8 +122,12 @@ contract ZoruDrandBeacon is IZoruBeaconSource, Initializable {
         if (epochs.length == 0 || epochs.length > 64) revert InvalidBatch();
 
         for (uint256 i = 0; i < epochs.length; ++i) {
-            delete cachedSeed[epochs[i]];
-            delete cachedConfig[epochs[i]];
+            if (hasActiveSeed && activeEpoch == epochs[i]) {
+                delete activeSeed;
+                delete activeEpoch;
+                delete hasActiveSeed;
+                delete activeTrust;
+            }
             emit BeaconCacheInvalidated(epochs[i]);
         }
     }
@@ -146,8 +157,9 @@ contract ZoruDrandBeacon is IZoruBeaconSource, Initializable {
     /// signed round for this epoch. Gas paid by sender of this transaction.
     function publish(uint48 epoch, bytes calldata signature) external returns (bytes32 randomness) {
         if (block.timestamp < releaseTime(epoch)) revert NotYetReleased();
+        if (epoch != (block.timestamp - launchTime) / ZORU_EPOCH_PERIOD) revert InvalidRound();
         bytes32 config = cacheTrustId();
-        if (cachedSeed[epoch] != bytes32(0) && cachedConfig[epoch] == config) revert AlreadyPublished();
+        if (hasActiveSeed && activeEpoch == epoch && activeTrust == config) revert AlreadyPublished();
         if (signature.length != 64) revert InvalidSignatureLength();
 
         uint64 round = expectedRound(epoch);
@@ -161,8 +173,10 @@ contract ZoruDrandBeacon is IZoruBeaconSource, Initializable {
 
         randomness = sha256(signature);
         if (randomness == bytes32(0)) revert InvalidSignature();
-        cachedSeed[epoch] = randomness;
-        cachedConfig[epoch] = config;
+        activeSeed = randomness;
+        activeEpoch = epoch;
+        hasActiveSeed = true;
+        activeTrust = config;
         emit BeaconPublished(epoch, round, randomness);
     }
 }

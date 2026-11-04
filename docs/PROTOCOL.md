@@ -19,7 +19,7 @@ generation, epoch, seed, beneficiary, nonce
 
 Generation and nonce are full uint256 values; epoch is uint48. The Keccak digest must be strictly below the epoch target. The beneficiary is part of the digest. Copying a submission cannot redirect its reward. A digest is accepted once. Reusing a nonce with another beneficiary, seed, epoch or generation creates different work.
 
-Anybody may publish the scheduled drand evmnet signature. The Beacon verifies its BN254 BLS signature and binds cached randomness to the verification configuration, active Beacon implementation and coordinated suite revision. On a suite upgrade, old cached randomness is automatically treated as untrusted, without deleting each historical epoch. Fresh mining may require republication of the authentic drand signature. RPC and drand availability remain dependencies. The network chain hash, trusted key, round schedule and domain separator must be reviewed together.
+Anybody may publish the scheduled drand evmnet signature for the current epoch. The Beacon verifies its BN254 BLS signature and binds the rolling cache to the verification configuration, active Beacon implementation and coordinated suite revision. On a suite upgrade, old cached randomness is automatically treated as untrusted. Fresh mining may require republication of the authentic drand signature. Historical seeds remain in the Ledger and events. RPC and drand availability remain dependencies. The network chain hash, trusted key, round schedule and domain separator must be reviewed together.
 
 ## Epochs and rewards
 
@@ -34,6 +34,8 @@ The token enforces the lifetime cap, but the current owner can replace the issue
 Any caller may seal a closed epoch or claim an accepted proof. Claims always pay the recorded beneficiary, regardless of who submits the transaction. Unclaimed rewards remain liabilities of the Ledger, and claims do not expire under the current rules.
 
 An opened epoch stores its closing timestamp. Clock changes cannot reopen a sealed epoch or delay an already mature budget. Allocation, funded backing, paid rewards and outstanding liabilities are accounted separately.
+
+Each proof occupies one native storage row, including its claim status. Epoch metadata occupies three rows. Proof indices are bounded at 4,294,967,295 per epoch, with checked conversions during migration. See [Native storage](NATIVE_STORAGE.md) for measurements and capacity planning.
 
 ## Upgrades
 
