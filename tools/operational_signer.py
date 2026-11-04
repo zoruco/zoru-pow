@@ -87,8 +87,12 @@ def run(args):
     encoded=subprocess.check_output([args.cast,'calldata',functions[prefix],batch],text=True).strip()
     require(encoded.lower()==transaction['data'].lower(),'Reviewed migration calldata changed')
     rpc=Rpc(args.rpc)
-    require(int(rpc.call('eth_chainId',[]),16)==6736,'Wrong EVM signing network')
-    require('anvil' not in str(rpc.call('web3_clientVersion',[])).lower(),'Production signing refuses a fork')
+    network=rpc.batch([('eth_chainId',[]),('web3_clientVersion',[]),
+        *[('eth_call',[{'to':manifest['ledger'],'data':selector(signature)},'latest'])
+          for signature in ['admissionPaused()','claimsPaused()']],
+        ('eth_getStorageAt',[manifest['ledger'],IMPLEMENTATION_SLOT,'latest'])])
+    require(int(network[0],16)==6736,'Wrong EVM signing network')
+    require('anvil' not in str(network[1]).lower(),'Production signing refuses a fork')
     native=Rpc(args.native).url
     connection=(http.client.HTTPSConnection if native.scheme=='https' else http.client.HTTPConnection)(native.hostname,native.port,timeout=15)
     try:
@@ -96,10 +100,10 @@ def run(args):
         response=connection.getresponse()
         require(response.status==200 and json.loads(response.read(1048576))['chain_id']==NATIVE_CHAIN,'Wrong native signing network')
     finally:connection.close()
-    for signature in ['admissionPaused()','claimsPaused()']:
-        require(words(rpc.call('eth_call',[{'to':manifest['ledger'],'data':selector(signature)},'latest']),1)[0]==1,
+    for value in network[2:4]:
+        require(words(value,1)[0]==1,
                 'Both protocol maintenance pauses are required')
-    implementation='0x'+rpc.call('eth_getStorageAt',[manifest['ledger'],IMPLEMENTATION_SLOT,'latest'])[-40:]
+    implementation='0x'+network[4][-40:]
     actual=rpc.call('eth_getCode',[implementation,'latest'])
     expected=json.loads(args.implementation_artifact.read_text())['deployedBytecode']['object']
     require(actual==expected,'The reviewed migration implementation is not active')
@@ -109,8 +113,9 @@ def run(args):
     descriptor=os.open(lock_file,os.O_CREAT|os.O_RDWR,0o600)
     try:
         fcntl.flock(descriptor,fcntl.LOCK_EX|fcntl.LOCK_NB)
-        nonce=int(rpc.call('eth_getTransactionCount',[account,'latest']),16)
-        require(nonce==unsigned(transaction['nonce']) and nonce==int(rpc.call('eth_getTransactionCount',[account,'pending']),16),
+        nonces=rpc.batch([('eth_getTransactionCount',[account,tag]) for tag in ['latest','pending']])
+        nonce=int(nonces[0],16)
+        require(nonce==unsigned(transaction['nonce']) and nonce==int(nonces[1],16),
                 'Operational nonce is pending or changed')
         retained=root/'signers'/'mainnet'/account/'private-journal'
         require(not list(retained.glob('*.json')),
