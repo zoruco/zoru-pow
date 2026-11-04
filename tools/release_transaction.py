@@ -149,7 +149,8 @@ class MainnetTransactions:
                 'Recipient is outside the authorized protocol release')
         require(to is not None or creation_runtime, 'Deployment requires exact reviewed runtime')
         if self.account != self.owner:
-            permitted = [selector('copyLegacyProofs(bytes32[])'),selector('clearLegacyProofs(bytes32[])')]
+            permitted = [selector(signature) for signature in ['copyLegacyProofs(bytes32[])','clearLegacyProofs(bytes32[])',
+                         'copyLegacyEpochs(uint48[])','clearLegacyEpochs(uint48[])']]
             require(to is not None and to.lower() == self.manifest['ledger'].lower() and data[:10] in permitted,
                     'Operational signing is restricted to permissionless proof migration batches')
         price = int(self.rpc.call('eth_gasPrice',[]),16)

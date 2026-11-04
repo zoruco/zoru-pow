@@ -63,6 +63,14 @@ class OperationalSigningTests(unittest.TestCase):
             with self.subTest(value=value),self.assertRaises(ValueError):operational_signer.unsigned(value)
         self.assertEqual(operational_signer.unsigned('0x1a50'),6736)
 
+    def test_epoch_batches_reject_excess_count_and_non_uint48_values_before_signing(self):
+        prefix=selector('copyLegacyEpochs(uint48[])')
+        for data in [prefix+f'{32:064x}'+f'{17:064x}'+f'{1:064x}'*17,
+                     prefix+f'{32:064x}'+f'{1:064x}'+f'{2**48:064x}']:
+            with patch('sys.stdin',io.StringIO(json.dumps({**self.transaction,'data':data}))),\
+                 patch.object(operational_signer,'Rpc',side_effect=AssertionError('Rejected epoch batch reached signing')):
+                with self.assertRaises(ValueError):operational_signer.run(self.args)
+
     def test_wallet_case_normalization_keeps_ciphertext_private_and_preserves_original(self):
         with tempfile.TemporaryDirectory() as directory:
             wallet=Path(directory)/'wallet.json'

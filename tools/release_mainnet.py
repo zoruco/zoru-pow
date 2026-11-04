@@ -37,7 +37,7 @@ class Release:
         self.rpc=self.owner.rpc
         self.proof_signer=None
         if args.operational_command:
-            require(0<args.operational_fee_budget_wei<=100*10**18,'Operational gas allowance exceeds the release bound')
+            require(0<args.operational_fee_budget_wei<=200*10**18,'Operational gas allowance exceeds the release bound')
             command=json.loads(args.operational_command.read_text())
             require(isinstance(command,list) and command and all(isinstance(v,str) for v in command),
                     'Protected signing command must be an explicit argument array')
@@ -165,7 +165,7 @@ class Release:
 
     def migration(self):
         return ProofMigration(self.owner,self.inventory(),self.a.output/'migration.json',cast=self.a.cast,
-                              batch_size=32,proof_transactions=self.proof_signer)
+                              batch_size=32,proof_transactions=self.proof_signer,operational_epochs=self.proof_signer is not None)
 
     def migrate(self):
         self.active('ZoruLedgerMigration','ZoruDrandBeaconMigration')

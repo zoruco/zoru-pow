@@ -39,6 +39,7 @@ class ReleaseSafetyTests(unittest.TestCase):
         migration=ProofMigration.__new__(ProofMigration)
         migration.t=SimpleNamespace(send=Mock())
         migration.proof_transactions=SimpleNamespace(send=Mock())
+        migration.operational_epochs=False
         migration.data=lambda signature,*_:signature
         migration.ledger='0x'+'1'*40
         for function in ['copyLegacyProofs(bytes32[])','clearLegacyProofs(bytes32[])']:
@@ -47,6 +48,18 @@ class ReleaseSafetyTests(unittest.TestCase):
         migration.send('epochs','copyLegacyEpochs(uint48[])','[1]')
         self.assertEqual(migration.proof_transactions.send.call_count,2)
         self.assertEqual(migration.t.send.call_count,2)
+
+    def test_permissionless_epoch_records_use_the_bounded_operational_signer(self):
+        migration=ProofMigration.__new__(ProofMigration)
+        migration.t=SimpleNamespace(send=Mock())
+        migration.proof_transactions=SimpleNamespace(send=Mock())
+        migration.operational_epochs=True
+        migration.data=lambda signature,*_:signature
+        migration.ledger='0x'+'1'*40
+        migration.send('epochs','copyLegacyEpochs(uint48[])','[1]')
+        self.assertEqual(migration.proof_transactions.send.call_args.kwargs,{'gas_limit':3_000_000})
+        migration.send('initialize','startEpochMigration(bytes32,uint256)','0x1',1)
+        self.assertEqual(migration.t.send.call_count,1)
 
 
 if __name__=='__main__':unittest.main()

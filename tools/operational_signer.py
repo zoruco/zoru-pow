@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sign only permissionless proof-migration calls with an existing protected wallet.
+"""Sign only permissionless record-migration calls with an existing protected wallet.
 
 The encrypted wallet and its password remain on the signing host. This program
 does not broadcast, transfer value, change ownership or authorize upgrades.
@@ -70,14 +70,19 @@ def run(args):
     gas,price=unsigned(transaction['gasLimit']),unsigned(transaction['gasPrice'])
     require(21000<=gas<=3_000_000 and 0<price<=300_000_000_000 and gas*price<=500_000_000_000_000_000,
             'Operational transaction exceeds bounded migration fees')
-    functions={selector(signature):signature for signature in ['copyLegacyProofs(bytes32[])','clearLegacyProofs(bytes32[])']}
+    functions={selector(signature):signature for signature in ['copyLegacyProofs(bytes32[])','clearLegacyProofs(bytes32[])',
+        'copyLegacyEpochs(uint48[])','clearLegacyEpochs(uint48[])']}
     data=bytes.fromhex(transaction['data'].removeprefix('0x'))
     prefix='0x'+data[:4].hex()
     require(prefix in functions and len(data)>=100,'Unexpected operational function')
     require(int.from_bytes(data[4:36],'big')==32,'Noncanonical proof batch offset')
     count=int.from_bytes(data[36:68],'big')
-    require(1<=count<=64 and len(data)==68+count*32,'Proof migration batch is not bounded and canonical')
+    epochs='Epochs' in functions[prefix]
+    require(1<=count<=(16 if epochs else 64) and len(data)==68+count*32,'Migration batch is not bounded and canonical')
     digests=['0x'+data[68+i*32:100+i*32].hex() for i in range(count)]
+    if epochs:
+        require(all(int(value,16)<2**48 for value in digests),'Epoch identifier exceeds uint48')
+        digests=[str(int(value,16)) for value in digests]
     batch='['+','.join(digests)+']'
     encoded=subprocess.check_output([args.cast,'calldata',functions[prefix],batch],text=True).strip()
     require(encoded.lower()==transaction['data'].lower(),'Reviewed migration calldata changed')

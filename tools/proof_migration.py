@@ -13,7 +13,8 @@ def offset(slot, index):
 
 
 class ProofMigration:
-    def __init__(self, transactions, inventory, progress, cast='cast', batch_size=16, proof_transactions=None):
+    def __init__(self, transactions, inventory, progress, cast='cast', batch_size=16, proof_transactions=None,
+                 operational_epochs=False):
         self.t = transactions
         self.rpc = transactions.rpc
         self.inventory = json.loads(Path(inventory).read_text())
@@ -22,6 +23,8 @@ class ProofMigration:
         require(1<=batch_size<=64,'Migration batch exceeds the contract bound')
         self.batch_size=batch_size
         self.proof_transactions=proof_transactions or transactions
+        self.operational_epochs=operational_epochs
+        self.epoch_batch_size=16 if operational_epochs else batch_size
         self.ledger = transactions.manifest['ledger']
         require(self.inventory['chainId'] == 6736 and self.inventory['ledger'] == self.ledger.lower(),
                 'Historical inventory is for a different protocol')
@@ -32,21 +35,26 @@ class ProofMigration:
                 'Historical inventory fingerprint mismatch')
         self.inventory_hash = '0x'+claimed_hash
         self.result = {'schema':'zoru-migration-progress-1','inventorySha256':claimed_hash,'completedProofs':0,
-                       'completedEpochs':0,'batchSize':batch_size,'batches':[],'status':'IN_PROGRESS'}
+                       'completedEpochs':0,'batchSize':batch_size,'epochBatchSize':self.epoch_batch_size,
+                       'batches':[],'status':'IN_PROGRESS'}
         if self.progress.exists():
             previous = json.loads(self.progress.read_text())
             require(previous['inventorySha256'] == claimed_hash, 'Retained migration inventory differs')
             require(previous.get('batchSize',16)==batch_size,'Retained migration batch boundaries differ')
+            require(previous.get('completedEpochs',0)==0 or previous.get('epochBatchSize',batch_size)==self.epoch_batch_size,
+                    'Retained epoch batch boundaries differ')
 
     def data(self, signature, *values):
         return subprocess.check_output([self.cast,'calldata',signature,*map(str,values)],text=True).strip()
 
     def send(self, label, signature, *values):
-        signer = self.proof_transactions if signature in ['copyLegacyProofs(bytes32[])','clearLegacyProofs(bytes32[])'] else self.t
+        operational = signature in ['copyLegacyProofs(bytes32[])','clearLegacyProofs(bytes32[])'] or (
+            self.operational_epochs and signature in ['copyLegacyEpochs(uint48[])','clearLegacyEpochs(uint48[])'])
+        signer = self.proof_transactions if operational else self.t
         if signature=='copyLegacyEpochs(uint48[])':
             # Native execution charges differ from the read node's estimator.
             # Bound the 32-epoch write using measured native storage costs.
-            return signer.send(label,self.ledger,self.data(signature,*values),gas_limit=7_000_000)
+            return signer.send(label,self.ledger,self.data(signature,*values),gas_limit=3_000_000 if self.operational_epochs else 7_000_000)
         return signer.send(label,self.ledger,self.data(signature,*values))
 
     def reads(self, calls):
@@ -144,8 +152,8 @@ class ProofMigration:
         require(state == [int(self.inventory_hash,16),len(self.proofs),len(self.proofs),len(self.proofs),1], 'Proof migration counters disagree')
         ids = sorted((int(epoch),record) for epoch,record in self.epochs.items())
         self.send('start-epoch-migration','startEpochMigration(bytes32,uint256)',self.inventory_hash,len(ids))
-        for low in range(0,len(ids),self.batch_size):
-            part = ids[low:low+self.batch_size]
+        for low in range(0,len(ids),self.epoch_batch_size):
+            part = ids[low:low+self.epoch_batch_size]
             self.verify_epochs(part,'source')
             argument = '['+','.join(str(epoch) for epoch,_ in part)+']'
             copy_receipt = self.send(f'epoch-copy-{low:06d}','copyLegacyEpochs(uint48[])',argument)
