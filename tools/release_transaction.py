@@ -198,11 +198,24 @@ class MainnetTransactions:
         record.setdefault('resubmissions',[]).append({'timestamp':int(time.time()),
             'nativeAccountNonce':transaction['nonce'],'sameSignedBytes':True})
         atomic_json(self.journal/(record['label']+'.json'),record)
-        result=self.submit_rpc.call('eth_sendRawTransaction',[raw])
-        require(result.lower()==record['transactionHash'],'Recovery broadcast hash differs; retain the journal')
+        self.broadcast_retained(record,raw)
         print(json.dumps({'operation':record['label'],'hash':record['transactionHash'],
                           'recovery':'RETAINED_SIGNED_BYTES','newSignatures':0}),flush=True)
         return True
+
+    def broadcast_retained(self,record,raw):
+        try:
+            result=self.submit_rpc.call('eth_sendRawTransaction',[raw])
+        except (OSError,ValueError) as error:
+            record.setdefault('submissionErrors',[]).append({'timestamp':int(time.time()),'error':str(error)[:240]})
+            atomic_json(self.journal/(record['label']+'.json'),record)
+            print(json.dumps({'operation':record['label'],'hash':record['transactionHash'],
+                              'submission':'RETAINED_FOR_RECONCILIATION'}),flush=True)
+            return
+        require(isinstance(result,str) and result.lower()==record['transactionHash'],
+                'Broadcast hash mismatch; retain the prepared transaction')
+        record['state']='broadcast'
+        atomic_json(self.journal/(record['label']+'.json'),record)
 
     def wait_irreversible(self,record):
         deadline=time.monotonic()+120
@@ -299,10 +312,7 @@ class MainnetTransactions:
                   'estimatedGas':estimate,'preparedAt':int(time.time()),'signedTransactionFile':str(signed_path)}
         atomic_json(path,record)
         self.verify()
-        result = self.submit_rpc.call('eth_sendRawTransaction',[raw])
-        require(result.lower() == tx_hash.lower(), 'Broadcast hash mismatch; retain the prepared transaction')
-        record['state'] = 'broadcast'
-        atomic_json(path,record)
+        self.broadcast_retained(record,raw)
         receipt,barrier,irreversible=self.wait_irreversible(record)
         if to is None:
             code = self.rpc.call('eth_getCode',[receipt['contractAddress'],'latest'])

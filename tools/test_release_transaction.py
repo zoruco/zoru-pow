@@ -121,6 +121,26 @@ class TransactionRecoveryTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,'fingerprint differs'):transaction.retry_retained(record)
             self.assertEqual(transaction.submit_rpc.call.call_count,1)
 
+    def test_submission_error_retains_the_exact_transaction_for_reconciliation(self):
+        for error in [OSError('Response lost'),ValueError('RPC rejected submission')]:
+            with self.subTest(error=str(error)),tempfile.TemporaryDirectory() as directory:
+                transaction,record=self.retained(directory)
+                transaction.submit_rpc.call.side_effect=error
+                transaction.broadcast_retained(record,'0x1234')
+                saved=json.loads((transaction.journal/'batch.json').read_text())
+                self.assertEqual(saved['transactionHash'],record['transactionHash'])
+                self.assertEqual(saved['submissionErrors'][0]['error'],str(error))
+                transaction.signing_callback.assert_not_called()
+
+    def test_broadcast_hash_mismatch_still_stops_execution(self):
+        with tempfile.TemporaryDirectory() as directory:
+            transaction,record=self.retained(directory)
+            transaction.submit_rpc.call.side_effect=None
+            transaction.submit_rpc.call.return_value='0x'+'4'*64
+            with self.assertRaisesRegex(ValueError,'hash mismatch'):
+                transaction.broadcast_retained(record,'0x1234')
+            transaction.signing_callback.assert_not_called()
+
     def test_receipt_wait_bounds_rebroadcast_attempts(self):
         transaction=MainnetTransactions.__new__(MainnetTransactions)
         transaction.confirmed=Mock(return_value=None)
