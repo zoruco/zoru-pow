@@ -32,7 +32,7 @@ class Release:
             'schema':'zoru-mainnet-release-1','chainId':6736,'implementations':{},'stages':{}}
         self.artifacts={name:json.loads((args.artifacts/(name+'.artifact.json')).read_text()) for name in NAMES}
         self.owner=MainnetTransactions(args.manifest,args.output/'owner-transactions',args.wallet,
-            args.rpc,args.native,args.cast,fee_budget_wei=100*10**18)
+            args.rpc,args.native,args.cast,fee_budget_wei=100*10**18,submit_rpc=args.submit)
         self.manifest=self.owner.manifest
         self.rpc=self.owner.rpc
         self.proof_signer=None
@@ -47,7 +47,7 @@ class Release:
                 return json.loads(signed.stdout)
             self.proof_signer=MainnetTransactions(args.manifest,args.output/'proof-transactions',args.wallet,
                 args.rpc,args.native,args.cast,signing_account=args.operational_account,
-                signing_callback=sign,fee_budget_wei=args.operational_fee_budget_wei)
+                signing_callback=sign,fee_budget_wei=args.operational_fee_budget_wei,submit_rpc=args.submit)
         for name,address in self.state['implementations'].items():
             role='ledger' if name.startswith('ZoruLedger') else 'beacon'
             for signer in [self.owner,self.proof_signer]:
@@ -271,6 +271,7 @@ def main():
     parser.add_argument('stage',choices=['prepare','migrate','finalize','resume'])
     for name in ['manifest','artifacts','output','readiness']:parser.add_argument('--'+name,type=Path,required=True)
     for name in ['rpc','native','wallet']:parser.add_argument('--'+name,required=True)
+    parser.add_argument('--submit',help='Existing authorized transaction submission endpoint; defaults to --rpc')
     parser.add_argument('--cast',default='cast')
     parser.add_argument('--operational-command',type=Path)
     parser.add_argument('--operational-account')

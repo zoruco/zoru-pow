@@ -43,9 +43,10 @@ def atomic_json(path, value):
 
 class MainnetTransactions:
     def __init__(self, manifest, journal, wallet, rpc, native, cast='cast', signer='wallet-evm',
-                 signing_account=None, signing_callback=None, fee_budget_wei=None):
+                 signing_account=None, signing_callback=None, fee_budget_wei=None,submit_rpc=None):
         self.manifest = load_mainnet_manifest(manifest)
         self.rpc = Rpc(rpc)
+        self.submit_rpc=Rpc(submit_rpc or rpc)
         self.native = Rpc(native)
         self.wallet, self.cast, self.signer = wallet, cast, signer
         self.journal = Path(journal)
@@ -189,7 +190,8 @@ class MainnetTransactions:
                          'copyLegacyEpochs(uint48[])','clearLegacyEpochs(uint48[])']]
             require(to is not None and to.lower() == self.manifest['ledger'].lower() and data[:10] in permitted,
                     'Operational signing is restricted to permissionless proof migration batches')
-        price = int(self.rpc.call('eth_gasPrice',[]),16)
+        require(int(self.submit_rpc.call('eth_chainId',[]),16)==6736,'Submission network identity changed')
+        price = int(self.submit_rpc.call('eth_gasPrice',[]),16)
         require(0 < price <= 300_000_000_000, 'Mainnet fee quote exceeds release bound')
         transaction = {'from':self.account,'to':to,'chainId':6736,'nonce':nonce,'value':'0','data':data,'type':0,
                        'gasPrice':str(price)}
@@ -228,7 +230,7 @@ class MainnetTransactions:
                   'estimatedGas':estimate,'preparedAt':int(time.time()),'signedTransactionFile':str(signed_path)}
         atomic_json(path,record)
         self.verify()
-        result = self.rpc.call('eth_sendRawTransaction',[raw])
+        result = self.submit_rpc.call('eth_sendRawTransaction',[raw])
         require(result.lower() == tx_hash.lower(), 'Broadcast hash mismatch; retain the prepared transaction')
         record['state'] = 'broadcast'
         atomic_json(path,record)
