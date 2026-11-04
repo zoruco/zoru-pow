@@ -151,7 +151,11 @@ class MainnetTransactions:
             previous = json.loads(path.read_text())
             require(previous['transaction']['to'] == to and previous['transaction']['data'] == data,
                     'Operation label is already bound to a different transaction')
-            receipt = self.confirmed(previous)
+            if previous.get('state')!='confirmed':
+                receipt,barrier,irreversible=self.wait_irreversible(previous)
+                previous.update(nativeReceiptBarrier=barrier,nativeIrreversibleAt=irreversible)
+            else:
+                receipt=self.confirmed(previous)
             require(receipt is not None, 'Previously prepared transaction requires reconciliation')
             if to is None:
                 require(self.rpc.call('eth_getCode',[receipt['contractAddress'],'latest'])==creation_runtime,

@@ -38,6 +38,7 @@ class TransactionRecoveryTests(unittest.TestCase):
             transaction.verify=Mock()
             receipt={'transactionHash':'0x'+'1'*64,'gasUsed':'0x100','effectiveGasPrice':'0x20'}
             transaction.confirmed=Mock(return_value=receipt)
+            transaction.wait_irreversible=Mock(return_value=(receipt,100,100))
             transaction.signing_callback=Mock(side_effect=AssertionError('Recovery attempted another signature'))
             record={'transaction':{'to':'0x'+'2'*40,'data':'0x12345678'},'state':'broadcast'}
             atomic_json(transaction.journal/'batch.json',record)
