@@ -37,6 +37,7 @@ class Release:
         self.rpc=self.owner.rpc
         self.proof_signer=None
         if args.operational_command:
+            require(0<args.operational_fee_budget_wei<=100*10**18,'Operational gas allowance exceeds the release bound')
             command=json.loads(args.operational_command.read_text())
             require(isinstance(command,list) and command and all(isinstance(v,str) for v in command),
                     'Protected signing command must be an explicit argument array')
@@ -46,7 +47,7 @@ class Release:
                 return json.loads(signed.stdout)
             self.proof_signer=MainnetTransactions(args.manifest,args.output/'proof-transactions',args.wallet,
                 args.rpc,args.native,args.cast,signing_account=args.operational_account,
-                signing_callback=sign,fee_budget_wei=65*10**18)
+                signing_callback=sign,fee_budget_wei=args.operational_fee_budget_wei)
         for name,address in self.state['implementations'].items():
             role='ledger' if name.startswith('ZoruLedger') else 'beacon'
             for signer in [self.owner,self.proof_signer]:
@@ -273,6 +274,7 @@ def main():
     parser.add_argument('--cast',default='cast')
     parser.add_argument('--operational-command',type=Path)
     parser.add_argument('--operational-account')
+    parser.add_argument('--operational-fee-budget-wei',type=int,default=65*10**18)
     args=parser.parse_args()
     os.umask(0o077)
     release=Release(args)
