@@ -36,6 +36,9 @@ def atomic_json(path, value):
         stream.flush()
         os.fsync(stream.fileno())
     os.replace(temporary, path)
+    descriptor=os.open(path.parent,os.O_RDONLY|os.O_DIRECTORY)
+    try:os.fsync(descriptor)
+    finally:os.close(descriptor)
 
 
 class MainnetTransactions:
@@ -128,6 +131,11 @@ class MainnetTransactions:
                     'Operation label is already bound to a different transaction')
             receipt = self.confirmed(previous)
             require(receipt is not None, 'Previously prepared transaction requires reconciliation')
+            if to is None:
+                require(self.rpc.call('eth_getCode',[receipt['contractAddress'],'latest'])==creation_runtime,
+                        'Resumed deployment runtime differs from the reviewed artifact')
+            previous.update(state='confirmed',receipt=receipt)
+            atomic_json(path,previous)
             return receipt
         for existing in self.journal.glob('*.json'):
             record = json.loads(existing.read_text())
