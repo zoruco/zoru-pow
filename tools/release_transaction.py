@@ -61,6 +61,18 @@ class MainnetTransactions:
         self.proxy_admins = {role:'0x'+subprocess.check_output([self.cast,'keccak'],
             input='0xd694'+self.manifest[role][2:].lower()+'01',text=True).strip()[-40:]
             for role in ['ledger','engine','beacon']}
+        self.reviewed_proxy_code={}
+        self.reviewed_implementation_code={role:{} for role in ['ledger','engine','beacon']}
+        for role in self.reviewed_implementation_code:
+            proxy_code=self.rpc.call('eth_getCode',[self.manifest[role],'latest'])
+            require(subprocess.check_output([self.cast,'keccak'],input=proxy_code,text=True).strip()
+                    ==self.manifest['runtimeCodeHashes'][role],'Permanent proxy runtime differs from the manifest')
+            self.reviewed_proxy_code[role]=proxy_code
+            address=self.manifest['implementations'][role].lower()
+            code=self.rpc.call('eth_getCode',[address,'latest'])
+            require(subprocess.check_output([self.cast,'keccak'],input=code,text=True).strip()
+                    ==self.allowed_implementations[role][address],'Original implementation differs from the manifest')
+            self.reviewed_implementation_code[role][address]=code
 
     def authorize_implementation(self, role, address, reviewed_runtime):
         require(role in self.allowed_implementations, 'Unknown implementation role')
@@ -68,6 +80,7 @@ class MainnetTransactions:
         require(actual == reviewed_runtime, 'Implementation runtime does not match reviewed artifact')
         self.allowed_implementations[role][address.lower()] = subprocess.check_output(
             [self.cast,'keccak'],input=actual,text=True).strip()
+        self.reviewed_implementation_code[role][address.lower()]=reviewed_runtime
 
     def call(self, address, data, block='latest'):
         return self.rpc.call('eth_call', [{'to':address, 'data':data}, block])
@@ -86,8 +99,7 @@ class MainnetTransactions:
             actual = '0x'+self.call(self.manifest['admin'],selector(role+'Proxy()'))[-40:].lower()
             require(actual == self.manifest[role].lower(), 'Permanent proxy address changed')
             code = self.rpc.call('eth_getCode',[actual,'latest'])
-            digest = subprocess.check_output([self.cast,'keccak'], input=code, text=True).strip()
-            require(digest == self.manifest['runtimeCodeHashes'][role], 'Permanent proxy runtime changed')
+            require(code==self.reviewed_proxy_code[role], 'Permanent proxy runtime changed')
             proxy_admin = self.proxy_admins[role]
             registered = self.call(self.manifest['admin'],selector('adminOf(address)')+actual[2:].zfill(64))
             require('0x'+registered[-40:].lower()==proxy_admin and
@@ -96,8 +108,8 @@ class MainnetTransactions:
             implementation = '0x'+self.rpc.call('eth_getStorageAt',[actual,IMPLEMENTATION_SLOT,'latest'])[-40:].lower()
             require(implementation in self.allowed_implementations[role], 'Unexpected active implementation')
             implementation_code = self.rpc.call('eth_getCode',[implementation,'latest'])
-            actual_hash = subprocess.check_output([self.cast,'keccak'],input=implementation_code,text=True).strip()
-            require(actual_hash == self.allowed_implementations[role][implementation], 'Active implementation bytecode changed')
+            require(implementation_code==self.reviewed_implementation_code[role][implementation],
+                    'Active implementation bytecode changed')
 
     def native_info(self):
         native = self.native.url
