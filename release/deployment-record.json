@@ -8,6 +8,10 @@
   "ledger": "0xFf53a9079C2853C39C5adBfca788cb0f12aCFF03",
   "mode": "mainnet",
   "owner": "0x0dad2Ad1C030e2e67E7c01a952bab3ce81D4bfFC",
+  "rpcFallbacks": [
+    "https://vexascan.com/rpc",
+    "https://api.windcrypto.com/rpc"
+  ],
   "targetBits": 19,
   "token": "0xb972753d17C5131D127B6c22DDE79B91a3132D03"
 }

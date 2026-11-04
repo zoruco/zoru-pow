@@ -12,6 +12,16 @@ Before publishing a new version:
 
 Emergency upgrades require explicit owner authorization, documented effects on mining and claims, and a recovery plan. Contract upgrades do not change the Token's immutable lifetime cap.
 
+## Storage migration recovery
+
+Keep both contract pauses active until the final implementations, historical records and reward balances are verified. Stopping a miner does not replace these controls. Preserve the inventory, exact signed transactions, batch receipts and state directory across interruptions.
+
+If a submission cannot be reconciled, stop additional signing for that account. Check the canonical receipt, transaction hash and both pending and confirmed nonces; compare the native account nonce when necessary. Reuse retained signed bytes only after establishing that their nonce remains unused. A relay acknowledgement is not native finality.
+
+After any original proof or epoch row has been cleared, the original implementation is no longer a safe recovery target. Recovery must preserve the canonical mappings. The reviewed migration implementation can keep execution frozen while records and receipts are reconciled. Do not restart completed migration initialization after temporary counters have been retired; resume the recorded release stage.
+
+Activate mining only after cleanup, native irreversibility and final implementation verification. Retain the existing miner wallet and journal directories, install the matching manifest and binaries, then verify accepted work, epoch sealing and automatic claims on the intended network.
+
 ## Authority
 
 The owner can change the token issuer and upgrade the Ledger, Engine and Beacon. These are on-chain privileges, not restrictions enforced by this release policy. See [Security](SECURITY.md).

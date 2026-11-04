@@ -41,7 +41,7 @@ The full mainnet-state rehearsal includes claimed and unclaimed records, interru
 | Native miner | Production Keccak and authenticated drand; two miners, restart, automatic claims, lost submission response, HTTP outage, latency, both pauses |
 | Linux desktop | Four test groups passed with the software rendering backend |
 | Packaging | Ten package policy tests passed |
-| Release safeguards | 29 Python tests passed, including rejection of transfers, wrong chains, excessive fees, incomplete cleanup, missing receipt blocks, native finality checkpoints and duplicate signing during recovery |
+| Release safeguards | 41 Python tests passed, including rejection of transfers, wrong chains, excessive fees, incomplete cleanup, missing receipt blocks, native finality checkpoints, duplicate signing, unsafe rebroadcast and lost or rejected submission responses |
 
 Native receipts, RAM deltas and integration metrics are in [testnet-verification.json](../release/testnet-verification.json). Storage assumptions and 30-day through five-year projections are in [Native storage](NATIVE_STORAGE.md). The synthetic accounting load must not be presented as production PoW throughput.
 

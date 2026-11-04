@@ -28,6 +28,16 @@ Other EVM RPC endpoints are listed at [Chainlist](https://chainlist.org/chain/67
 
 **Initial difficulty bits:** 19
 
+## Active implementations
+
+| Module | Implementation |
+| --- | --- |
+| Ledger | `0xc1778bac309fa6e79536f9635a09d401f6d0c98d` |
+| Engine | `0xfc9ac7dbe9a853f33125a7c3118f1c11d607afa8` |
+| Beacon | `0xbb2c5f1a6fdda54f8c67e954822be4296ae8e055` |
+
+The Ledger and Beacon were activated on 4 November 2026 in transaction `0x8d2b7b1a6b201af5a0f5a92efa40ec1075bf764a005658de7fd54fb90ab0c09a`. Existing proxy addresses, token ownership, issuance rules and historical entitlements are preserved. Implementation bytes and authority checks were independently verified through the mainnet public RPC.
+
 ## Release files
 
 - `release/deployment-record.json` — confirmed deployment parameters
@@ -35,7 +45,7 @@ Other EVM RPC endpoints are listed at [Chainlist](https://chainlist.org/chain/67
 - `release/build-manifest.json` — compiler settings and build fingerprints
 - `release/abi/` and `release/layout/` — ABI and storage layout references
 
-Manifest SHA-256: `c2a89d2439f00fc768ce585e9b122b79b3dc6e0f3b201ad06c2d683b9bce0401`.
+Manifest SHA-256: `61d3436b4e795989cf9112b37ac27ef0abc86e279c94e3061de7279ced76e730`.
 
 The checksum detects changes to the manifest; it does not authenticate its publisher.
 
@@ -63,4 +73,4 @@ The verifier checks the chain, contract bytecode, proxy implementations, owner, 
 
 The current launch timestamp is configured on-chain. No additional launch transaction is required.
 
-EVM storage also depends on RAM allocated to the native `vex.evm` account. A relay error reporting insufficient RAM for that account means the native quota must be increased before new storage can be written. Proofs, epoch records and beacon caches consume persistent storage. Check native resource capacity alongside EVM gas balance; see the [Vexanium resource model](https://docs.vexanium.com/vexanium-protocol).
+EVM storage uses RAM allocated to the shared native `vex.evm` account. An accepted proof occupies one native storage row; an opened epoch occupies three. The Beacon reuses a fixed cache. Monitor actual quota and growth alongside EVM gas balances and relay CPU. Measurements and capacity projections are in [Native storage](NATIVE_STORAGE.md).
