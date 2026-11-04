@@ -74,247 +74,254 @@
     "migration-final": {
       "status": "PASS_REAL_ISOLATED_PROXY_MIGRATION_AND_SETTLEMENT",
       "chainId": 46736,
-      "sourceRecordSha256": "84399cb8525a8e5cfb0a648ae2bfc34bb975064369ad723fb786d97938d1c552",
+      "temporaryMigrationSlotsCleared": true,
+      "sourceRecordSha256": "ca6ce84cab16e82515afe9e210d2bb3dab0b0aab80fbc2299dacf642eefd5a27",
       "scope": "Real private VEX transactions; deterministic test beacon and accounting engine",
       "transactions": [
         {
           "label": "deploy-ZoruToken",
-          "hash": "0x52561af383b16d55c72c3bc18b1d53d5fc29140093586589840107bf2bf7c28b",
+          "hash": "0x16a83a13cb2487b2850e509125aa57ca8eab37f624af66bb929ebeb83142b4d4",
           "gasUsed": 584077,
           "ramDelta": 1505
         },
         {
           "label": "deploy-ZoruAdminAdapter",
-          "hash": "0x4070ac9376f48c6f9e3208694e9c9bd6eefcb6cdb87898ebd3f1e0e83959575a",
+          "hash": "0xf6c7fef2501e6ca8c9e1a0eeab0c7a9a92232b6688649becf2a7448622ad4d5a",
           "gasUsed": 2592817,
           "ramDelta": 20516
         },
         {
           "label": "deploy-ZoruLedgerV1",
-          "hash": "0x079d4334f4efd53c3d3fe701aba14b0a1cf5a5df306c18c50380283fa3cecb4e",
+          "hash": "0xc9dc36ac8f4bf2f322559e5dddd6f6a5c7a597cfa60ba1dc3a105df42d651899",
           "gasUsed": 1546894,
           "ramDelta": 813
         },
         {
           "label": "deploy-ZoruLedgerMigration",
-          "hash": "0x7c339e73b3f021c075c66fe55f684f9394950a873713a77136b097117c0e022c",
-          "gasUsed": 1699939,
-          "ramDelta": 13524
+          "hash": "0x923697aff0b19083625bc79cca35bd2fd8f389dcaa5f45fa725be15fd92b3b96",
+          "gasUsed": 1776086,
+          "ramDelta": 14127
         },
         {
           "label": "deploy-ZoruLedger",
-          "hash": "0xf3b82ec33d55dbd2445e5e9fd1bfd88f501fff75e7c10564cc090c38dcaacfb1",
+          "hash": "0x43087492e2fc54f5455bb355ba7aefc2ae0fde71eb9499c13b0c154220012660",
           "gasUsed": 1629336,
-          "ramDelta": 12965
+          "ramDelta": 813
         },
         {
           "label": "deploy-AlwaysAcceptEngine",
-          "hash": "0xace22ec572f1333bd1652b02bd9a5755b29b1e17271e97a93b075a4d42983c0c",
+          "hash": "0xb71459eef3e5f9a6df25cde50bd538aa523e7994c4d8bbf5f6f8716a184c66e5",
           "gasUsed": 102271,
           "ramDelta": 355
         },
         {
           "label": "deploy-MockBeacon",
-          "hash": "0x846bc31cce9243ce119a147fa61855a987e0840d969b98966f4febe9604bf19b",
+          "hash": "0xea1c0170dd8deadeca9d1cab96018540c25d1f57b5a7c27a0b934c6a1f6c1490",
           "gasUsed": 142206,
           "ramDelta": 1097
         },
         {
           "label": "deploy-existing-suite",
-          "hash": "0x3c2a11511a4e2dfe30f926d413e1e81242ba148ee796df75c81dfabd0943a850",
-          "gasUsed": 2667699,
+          "hash": "0x0dbf5b1a164738a6d0f280f4ba3b7c84243e6026cfcd2c6f7bc5a4a8396e9887",
+          "gasUsed": 2667711,
           "ramDelta": 18996
         },
         {
           "label": "bind-test-token-issuer",
-          "hash": "0x7ee2781877304ffc29d6340cf4d779708f10ff0e4918768cdd4b2c10107f05a4",
+          "hash": "0x3c37976f8ca8ee68b4b476d8079558efc8e41459bda8dab8704cd619a4fd616b",
           "gasUsed": 71391,
           "ramDelta": 346
         },
         {
           "label": "existing-first-proof",
-          "hash": "0xe4b0a7584f79153f1095fb9b664de53319fd162f4fe6ba92967afcf2bb05f782",
+          "hash": "0x0335f6229f93558fa30c0c1e58aa4c8aa90824a0902eff45eae6bd1d41f06f53",
           "gasUsed": 791673,
           "ramDelta": 5536
         },
         {
           "label": "existing-second-proof",
-          "hash": "0x180865937eb4b3bf2cf0b7a9231ea13c325cd0dab84948c376e710f9db348849",
+          "hash": "0xc1038814a25210923d0e9d6d4d1b954793ce12b5da57ee57b8c4cfc37539ee8d",
           "gasUsed": 186482,
           "ramDelta": 692
         },
         {
           "label": "existing-seal",
-          "hash": "0x65d17ff081c8e9069b338d1349eb29a8b29bef4397ec2210116dde86ab687002",
+          "hash": "0x9ffa4c681dbbae41fd16cb62358905707b9f8b3a24fb41d29e3a0255b276dabb",
           "gasUsed": 232138,
           "ramDelta": 1384
         },
         {
           "label": "existing-claim",
-          "hash": "0x5100636be7cfb0d1f44be6d97c84eab73432a9e73d907ec13b8639db26378eb4",
-          "gasUsed": 189492,
+          "hash": "0x24dc11dc0816e6d94c5413573553e7ead60e4d4f1aaf2a191ab835053fa23415",
+          "gasUsed": 189504,
           "ramDelta": 1038
         },
         {
           "label": "existing-unsealed-proof",
-          "hash": "0xd603a6c11b1540e7e0c25ef310d14723f9afd42b6f5d938799fc96bfad4e2753",
+          "hash": "0xd4d320bccf80feddac4e614b4981a745fde107ab5cefb87448aec9f22a8f1801",
           "gasUsed": 604462,
           "ramDelta": 3806
         },
         {
           "label": "pause-admission",
-          "hash": "0xf6e7102c1e20400bad55bdc0b55964253124f05eecca33d956fc6211ae41d164",
+          "hash": "0xbeba3afe9c211e5521af16fac61b425ad279eade0609f636ebb08e2c8859fc28",
           "gasUsed": 39158,
           "ramDelta": 0
         },
         {
           "label": "pause-claims",
-          "hash": "0xe03bf5653b6842f627e266ebba0a7043a643e905f5c6a4f5733285193e210e76",
+          "hash": "0x28bf8051c0f660f572faad19078c6e8e0fbedd2a3720788896c329cb40f56d0b",
           "gasUsed": 39208,
           "ramDelta": 0
         },
         {
           "label": "schedule-ZoruLedgerMigration",
-          "hash": "0x2c7c77e9b361f3ce7205429062da36fc8d990a760b78a9b4d6ce54544491fc05",
+          "hash": "0xcd96f2e2300a9a99173c02255ee8375cfb719c7c62f68a630217f0eaa1eac7a3",
           "gasUsed": 202159,
           "ramDelta": 1038
         },
         {
           "label": "activate-ZoruLedgerMigration",
-          "hash": "0xfed994d17aab624716a60669f5c81305bea6386452bc54232e7cad140885be55",
-          "gasUsed": 369734,
+          "hash": "0x19638fac7cdf11c604aea30f92c5de5a9ef2684d6031bbf2774e74431b401511",
+          "gasUsed": 369801,
           "ramDelta": 1730
         },
         {
           "label": "start-migration",
-          "hash": "0x919c40c31c8c9740e4198471bf69504a1bc24a3d7c4135f1009f6b98eaf7567b",
+          "hash": "0x92ad6e12a1a23bdfdf86bb591a6bc5832c46fd4bcae3b6e8144b98ecae0cd620",
           "gasUsed": 126611,
           "ramDelta": 692
         },
         {
           "label": "copy-proof-0",
-          "hash": "0x8ab45d1858a8400861201134a66b635c40110585bf4f51e9d86f83c35df4ab07",
-          "gasUsed": 136013,
+          "hash": "0x06e5762bf19002fa1204e06271dd8a3e3a6370d7c5ce4fb3d6b4811a67974b91",
+          "gasUsed": 136025,
           "ramDelta": 692
         },
         {
           "label": "cleanup-proof-0",
-          "hash": "0x57d0fb0ded3dde3c91fddb70a1a6f6cf3924cd05bd4907084ae2e27c6e87b149",
-          "gasUsed": 61383,
+          "hash": "0xabc7c4efb29c861fedbe722b3bbcf87dad00d539c7666f3ab604bb66ca5f65c8",
+          "gasUsed": 61395,
           "ramDelta": -692
         },
         {
           "label": "copy-proof-1",
-          "hash": "0xc41c0eb58b60e2b10e4960a9dfd67d1a5e9a4dca63a383d1ab7e3cd06951586e",
+          "hash": "0x371441e9f7868e540ddbc810ff4034e5db9abe47ccf6078525bb141715c0cf5f",
           "gasUsed": 97965,
           "ramDelta": 346
         },
         {
           "label": "cleanup-proof-1",
-          "hash": "0xdae46c0d6d1e6cbe32b6eb8fcfdaee692861a090d9b090a12b0d671a96903e32",
+          "hash": "0xf9883332b17f4a16724b567331f60b6e95c7fa5563de85a24178093cb9dfa519",
           "gasUsed": 58595,
           "ramDelta": -692
         },
         {
           "label": "copy-proof-2",
-          "hash": "0xfea73debc8b65559dedcaad0b12f996aa452019c3bce02b6ff726343734ff6f0",
+          "hash": "0x30de605850e342ea887a0252f623995f1ab8c87b683fe273132fbe09100faa86",
           "gasUsed": 97965,
           "ramDelta": 346
         },
         {
           "label": "cleanup-proof-2",
-          "hash": "0xd943f0036afb8dc37746baa28511de8a00126ad2821a5a5b9c04be0890791663",
+          "hash": "0xe7c4de2e2d84d2055ab6763c9a24c312ee049cb74abaf706cd9dd5ac061904e8",
           "gasUsed": 58595,
           "ramDelta": -692
         },
         {
           "label": "start-epoch-migration",
-          "hash": "0x7b1a806524517a989035d4c4d307dceeee040b7650a352af3013c8a8e116cb6f",
+          "hash": "0xb29409b58cb94c254259f9b8100e359538205f4a888f4dabbe073dc9a4ffe622",
           "gasUsed": 135582,
           "ramDelta": 692
         },
         {
           "label": "copy-historical-epochs",
-          "hash": "0x02b29e26242aae13f62c0346e1f4da00e07665659c0bea03993b5b8abc66f578",
+          "hash": "0xe387b9ebc21cd4d06b16db2d352d1dfa8e787736ceea951a7a888bd3e2e3c35f",
           "gasUsed": 391281,
           "ramDelta": 2422
         },
         {
           "label": "clear-historical-epochs",
-          "hash": "0x755ff52ebf4d6f663e1ec253d3c451cb66c629abba82943b8d7a3c7c61ffb9ec",
+          "hash": "0x4538be6e631dd981e682d52c5f8ee2fef026325402f3905faf97ad6adc04abed",
           "gasUsed": 160466,
           "ramDelta": -5882
         },
         {
+          "label": "retire-migration-receipts",
+          "hash": "0xbd13c41e8731f59c573446c21321099e34ce996a01f6af9f8d821f295522c11c",
+          "gasUsed": 81411,
+          "ramDelta": -2768
+        },
+        {
           "label": "schedule-ZoruLedger",
-          "hash": "0xf64a557ab99d3709ba95b7a60f01d743e6694f7dce3a6eecc79fb37b32631852",
+          "hash": "0xa876d4193dbff92f970593cfdab5ffdffffec18f4bd01b022501cf9fad641817",
           "gasUsed": 126039,
           "ramDelta": 346
         },
         {
           "label": "activate-ZoruLedger",
-          "hash": "0x96726f9818e20daed80c6baef6c2ea01197d77671707778eb98ba1768c058944",
+          "hash": "0x2058723543e036a4c21a1bc3384d2378ca934440495d9a74f8fe1d7c217e2194",
           "gasUsed": 369845,
           "ramDelta": 1730
         },
         {
           "label": "resume-claims",
-          "hash": "0x161355516742f531f9c8cd73a91cf9fe7a4f28713afb4eff4b2dd8b222ffcc73",
+          "hash": "0xddae00d01d13990831ccf767059bb3a226c6940860fcefbf148207ab788c8671",
           "gasUsed": 39196,
           "ramDelta": 0
         },
         {
           "label": "historical-unclaimed-reward",
-          "hash": "0xa85924058ba156ed4e99d7f867319a81dec1a97302053833457a2707d2cc0a47",
+          "hash": "0x408f6b7946cc2bf998ce13da86c7f1b8ca20f3c18c6511f97515b318f201aa2c",
           "gasUsed": 67360,
           "ramDelta": 0
         },
         {
           "label": "historical-unsealed-epoch-seal",
-          "hash": "0x0c49d02d29399322ed9c29a7d0c3a47c92aefb7418b632e9a9dd63a5c7973b93",
+          "hash": "0x2b91fbb56fe07c338688c9968293bfa4da7f87a9d88158df553e59d0b45f4451",
           "gasUsed": 111889,
           "ramDelta": 346
         },
         {
           "label": "historical-unsealed-reward",
-          "hash": "0x0bf4a24db9c5c188f416854801368f2505e9a72ff3e627f4e60546ce45235567",
+          "hash": "0x6ae48ab86de2a97708b47f1dedccca539eee12858bc012746ab5176bf92d7317",
           "gasUsed": 67360,
           "ramDelta": -346
         },
         {
           "label": "resume-admission",
-          "hash": "0x18fa5fe0c5b8c84db7e138c8421901dc4939dff56933fa6e2445604239b464dd",
+          "hash": "0xbaee0d3238be7c58486740740718492c69a8d28ad0260a8ee672fa68043cd393",
           "gasUsed": 39146,
           "ramDelta": 0
         },
         {
           "label": "compact-first-proof",
-          "hash": "0x29d5cad5c6cc2a3bf229ae4e163884ace5cf04abf28e99670d6e657c7d04c34c",
+          "hash": "0xdf54946aeee080c5f519e0732031cdb0632dd4ad29f2a1ab02116b8bd0705c1f",
           "gasUsed": 302147,
           "ramDelta": 1384
         },
         {
           "label": "compact-second-proof",
-          "hash": "0x64825872532e451fd1fe84aa907dea0ab5231864a9083b10abc9838ce5c2a529",
+          "hash": "0xde6dae8600b3a55815ac50b3f0a02c92a785b3cd77ec1092a89aa3ffb6e6ec6e",
           "gasUsed": 134661,
           "ramDelta": 346
         },
         {
           "label": "compact-seal",
-          "hash": "0xfedbd7c9fc0b917f3a3e69b5724c5bb8da9d5a7e420e31a747446b5cd8ea47ae",
+          "hash": "0xd4ef2fcf53c97b72f414f0f16550dd9e22424d2c33ea8c16f2c2f829cf0a0ab0",
           "gasUsed": 111889,
           "ramDelta": 346
         },
         {
           "label": "compact-first-claim",
-          "hash": "0x22b4928d04e0d21903765e70f4a68891146ec9f37974c4c6402a03f19a9491b7",
+          "hash": "0x3b0382c4024cd60d78072894d114eb44acb19d9c2119bb2427e3e2a8644de54c",
           "gasUsed": 67360,
           "ramDelta": 0
         },
         {
           "label": "compact-second-claim",
-          "hash": "0x0a2a112fdb7bad1837b80d4c40da881f9d5dad4ebd8cc58effb046b488527338",
-          "gasUsed": 67360,
+          "hash": "0x3d10f246c606a89b3ac9776605cd313b21f6f5298115f02d3b08294d7c5331b6",
+          "gasUsed": 67348,
           "ramDelta": -346
         }
       ]
@@ -9011,6 +9018,138 @@
         "bobBalance": 0,
         "lifetimeMinted": 2000000000
       }
+    },
+    "continuous-mining": {
+      "schema": "zoru-native-endurance-1",
+      "status": "PASS_REAL_NATIVE_CONTINUOUS_MINING_AND_SETTLEMENT",
+      "chainId": 46736,
+      "mainnetTouched": false,
+      "seconds": 1800.673084178,
+      "accepted": 106,
+      "autoClaimed": 100,
+      "epochContexts": 31,
+      "hashes": 55262528,
+      "processCpuSeconds": 245.763207,
+      "rpcRequests": 17866,
+      "errors": [],
+      "afterSettlement": {
+        "allocatedSupply": 17500000000,
+        "fundedSupply": 17500000000,
+        "paidSupply": 17500000000,
+        "totalProofs": 118,
+        "ledgerBalance": 0,
+        "aliceBalance": 0,
+        "bobBalance": 0,
+        "lifetimeMinted": 17500000000
+      },
+      "proofTransactions": [
+        "0x5306e6bcf1c50d834f14b16bd0bf51c519cf732b7690e4aec6e55797edbc8cd5",
+        "0x6923ea5518017a6ebabf96fc26d88e6b7029f3c92be825c2fd06fff52648c3de",
+        "0xf5765ea9ca84830468df137bd1df50ee58dee39b0dde3a14e88eaa27b56434cf",
+        "0x89488b72b1f26859905f032f5287d381889f93cb0b3bf0a06afe477fb61cefc5",
+        "0xe0882fd3f2015c51ed723a13ddd0d1aaa65633c10eae479a29ee24193e6fb978",
+        "0xb6b388fd7edba1c751a0ed4c49c63531a00c9e685651b8e9cb21f6d74cdae09b",
+        "0x9ab6754015ba954bce1f68af5370ecad65b77d860e97263b526a0d69809773aa",
+        "0x45fe06d56944c40ab4da738c1a71e3e0cb1b3cc30612d8b3397d43e43e08e4f9",
+        "0x5d9409aa4f55419bcde80f701f66a77eec3c499734c53741b5ab85da1868e081",
+        "0xa17b28f7c7e4724ed7cbabf0a2246fb7eadf2c7808c55eb83cbfc7596462ff06",
+        "0x5d069b4f083a40d87407a97a39e0b897a1a50a4b382a03fcc592615dc4d66edc",
+        "0x17fbc262892b1c9216dfdf3d79807b71ec7f06cb5b37e7cd3fca8a1e5e782a2c",
+        "0x4fc01e921392b1de28cb8f815dcb904af8832293a3a7cb674f01cca8240c28f3",
+        "0xd1ddea9db25f856d04eaa567e34ad05b6aef18add7ce4f9978137d58af0c9d5a",
+        "0x79e71b1bcfd99630cd091e1eecd1e3da53d7529b689083957cb413533fb68e38",
+        "0xcb1db9741bd1b581d4a275e87010f63e9ac0cace54a6b41bac7d817973a127a4",
+        "0xeab1fe8e59d5dd8fe113f3377d76b5d8db7b59671b5f02b956aa922d7d76915a",
+        "0x7ab78fba5870eb5e8ea64f319826a8a241312b89e9fc3769b804b7d5f8742750",
+        "0x3ed2a84e5e5c4ba20a4aaecc0c0360fa9a1a21240a86c640130c6d09a0eba794",
+        "0x83a165db65472061042bb29876abde7c1c17b91d65caf47d3ac862b7dfa6a6a1",
+        "0xa0febeb9565644aa0cec39f147adef90f0d045cabe1203808cac90852e9d4f92",
+        "0x39f9a6892b89d07ec29ae96b15b84d6bb61fe026a18a88b43b5af78df7988d0c",
+        "0xa4738e19309113555c72e21530a26cc9041d7503c4565c1d061102e6932508a0",
+        "0x3711287e8c8024d207bf1ec2bba24432fe93197c23775dbb27f3788917fed834",
+        "0x22a403fdf0e5697b34b6e1317c0c2e21d6fa3e048df2467a3bc4f6df870e744d",
+        "0x27dbd6ba37a9686975511f85ea4ae35fe5e756d73d3858906a8ef74aa79ae06b",
+        "0x5032fac634a3a2f320ef989524798b72a90812a3747c3e02edc7409e134b5f45",
+        "0x44551ba1c7f267d8394802da55d168ec2b400c72f58a72d262e2d29aa71f9c45",
+        "0x63de71c955e5c19985e76b0f2aced8e2590f4e66c04763abb05af938e4f3df4c",
+        "0x5408fe234233a4fba0ebc647f6c1ff55f98e22eef43d0b7a9fb863af67565c0a",
+        "0x559d84c8dcfab2ebb950ecf69699e0f4f4b2ff0a117533bf3a7fcb21d7a3f371",
+        "0x2786776087636bafeb4e6ac1f95d6d57c384bffd227c692f5a8eb38be5ebbd7a",
+        "0x70f2c85e1645ed5c0f2d86986620bb5a6299ffb13d7d1612797edb65ba12a1bd",
+        "0xbc37c31718501ca591ce43e23d683ba89c2cfb6582edab92720686ee18f6ef9a",
+        "0x6c7316b339b1eab57a8acb4ee815b09d4940f6a3a9efec4b8abb01656bedac77",
+        "0x222bc5f86e51dc3b0a31cdf22f5f4098c305a2e8b7fb44dad296f48892c4ba76",
+        "0xc2277468f9d9f526d43c700fe81302e9f774c5ea4bed9acdf02032cc13057c87",
+        "0x5b4a97d2d4435ead15da055f10f03777a9557b5877b370c034230394725ac623",
+        "0xb7679d3d8ff77c9e289f4bb9553c8b2a037b53499c40721927015a6b8dfd4a3a",
+        "0x91c13365728a2b1b0188b9ddfa968fa7d7a1ca6b3452aa3ba3f518182ea9af5a",
+        "0x413b4d904bc42e54fc5f57a072f34e50a8bd476e5ec76c8716767b182b72e098",
+        "0x1f17e43e66712c73040c0d17f3e88c35afb2576a6fb3c3a18d8ca6a40c8a928f",
+        "0x1485556bc5eb6d47338c56aee23f71dcae926f2381a90c9b41b619893ff1304b",
+        "0xb7362dd1fd8ab319425df8ea6ff463b541afadc0435b74f3c8923a4bc9022f3e",
+        "0x33759fff80ed1ad2cca2ae1e165faba60216fa531feb9c484f669355132c9dbe",
+        "0xd4c7593aed22cf6e4df011fdb0a1c63922d0ab26b2dc18743acc25395c8c2a99",
+        "0x44ff9b9b8a7e9f6b7eedaa89b1d5cdfed3248ac20cba220e411be400f97cae19",
+        "0x0efcce94af0a9f95003c9a431a28fdf79654b932b2dc98a88b0757750c7a3c58",
+        "0x82f3066bce2a14b8f4dc48857c7e9d191072c7f461234befd63411c1edc0310d",
+        "0xbc77e8a469e6748fe6161ef1058a84d85ab5fa162b4090341b7536abcdffeb6e",
+        "0x83dd887bc68591b14617c07b4eb74846c211a918351190d489ed5cb90174d53c",
+        "0x4bc46ea2436143c4ed3e7cd475bba650bffd95ae457bad8ec82667a39facef08",
+        "0x8343b211cf1bbf2f6e28ae7829ed299566b82e76d485bc255c3728378a06c7f1",
+        "0xda6b5326c7e0b78d12a24bde8f1d9275130237d40f7c6fd53d8823605aeb45ca",
+        "0x55ec3e458e472467a839ffd5ddfc2b7901c81dce944955076b43a8039ad5c2dc",
+        "0x435ba4f67b494951c09e9e5eecd97fdfad82594d75bcd60691cf12468ec27399",
+        "0xae0ea6f53f70cc3f7262344cb8bd42d2fdd9fd9ab4de934afa9a75c4ad6c9c84",
+        "0x9fff4aea0aba4c1f0d95049a7411d6de1ddae928c5510366e5795a8c7ea8108c",
+        "0xd638af93a597f56ab8db3c271ebd1eafa8e1aca718c658dd56a8a7ad209b86fc",
+        "0xf8fdae5e107fd4846fdd4f8c066f12f29561d59bb318c23576df37c404d9a00f",
+        "0x188465811663eff5d2341c8032a40ba0539dd23ce6dce1b22315dc8191968b0a",
+        "0x0dab4315fb7cfa0428358d2178f74a103137c1987838b195426049837afce6c0",
+        "0xbf9cdf8edbd5dd52824a213b7caf62372148a045328d64cd4316465bacd85155",
+        "0x3dca6696b8832a31417591d0a10f2f1a1f8c01eefb12a9d252658efc685e4436",
+        "0x01862ff2b5924a57a543c2cec53d5ec43dc951ba5dce15ae65e56ab505031910",
+        "0x171570b84e53f986b498eab23b470a5ad50a51c74de1080f7e4cc769b567f242",
+        "0xf84668f5dd8fcd9a814dab578b101142aab5aa1735461670a9aaf6a4dbf1af34",
+        "0x4691768466018f714eaeedf4e4e19e66656b1154cbf2791670edd816a1f82076",
+        "0x3850edeaa97621970e5c2f0258a10c6df5526595ad82e0845d7f30d90c6649d9",
+        "0x0ca86c89e0e7d52074c7bd46c6fb4689bbef7fb36b5a4d740008a81bb43b94f7",
+        "0x02df682e1850b87a63798dda6cb375451e1b31dd4d7ed5b1d3359a70496e9c03",
+        "0xbbb09b4c0271b15aae092c333b60136f76d3ceedba9d9c4d7215f43a8322f93b",
+        "0xbac6ed95d906043842169d69be7aa367c337031a088fdcf540a529497bca234d",
+        "0x911c15a4cdaf0bee88d27c8678f156b01eb5d85674bae26223ad72c16fe6a576",
+        "0xf3ecacf17fd4bd6cb76c7a121ea4bb8f5b08b6d4de548edd470dec32274d390a",
+        "0x44b3baf5ede4fbcbbefe7f8f099c118b178c18e1138d0ea6602c45aab6803e98",
+        "0x1b4b69edf40f73989864803e8efa14fe5fa91ef95c48f905a78948fffc1ab2b1",
+        "0x1ad22145b2055667cea00931d235b89e1240a7a88730d6ade655d41a9d557336",
+        "0x3d98c57b5e2685283e269323858497b52f2a719c9ce4df1a94984ef0b6718c9e",
+        "0x7f8996e71a85becfc55c21ad54f2a75dfc144be6a68ac7ec07ebbb07f53b457e",
+        "0x360e8e36a20ae6c8a79b572eed3896a4dda8d57f292c9260ff5c669f9c3a85d7",
+        "0xd9405678d21f75cb937e35c56797a940a5b6b1a9bf3d0613902a4e5e493dc6f8",
+        "0x3eb3feccd4e66b214cbb732ef347f4a9b77a29d7a82a5d8c8f4970a7e8a31f19",
+        "0x6b58ae9e44558414581ee78dc4a351ba37c30f1d5bb104ed5ad5d4cc31a8ff1f",
+        "0x4b83c5864adce01e6f1017177118f03fa0c34238fdaa8d5304d28047ffc8e442",
+        "0xa413e984ce4540bce770d4bb6a7df5cfee0a2f4a797ba0144f8f74c77d8f159a",
+        "0x57bf67c4554cd404fc1f476cb719bf2969a41acf52c26bf6c87b5c127c32467a",
+        "0x8f90447598d91a54e3a1baee4ef0d16345a6e9cf569e7205fbf9045b3db12534",
+        "0x26938718046c4533ee58d97f1877b66c3dad2ff02fbfb722a9da47e0aa10dfda",
+        "0xd087ffd496ba5923a571d6309fc106906e0976b5c8f7474a0ff9b5b85bef79f5",
+        "0x0200e146cf0b8de393879a2758f33ca06b7b2844c4bdeb4f2550c05fefede035",
+        "0x45fb897e8e08818b480166b5e61924d21cd0115ced1525765993b12809ed653d",
+        "0x2b2eb59b8626928ca6d6fec75edde327af5c9b71f70890834e4e20ac82b4aa24",
+        "0x8713f112835fce7d8d0b9f1831030dc945969bc60b35f19a1b186bfa105a9b42",
+        "0xee1f210a574e4716764a4f01a59d7d5ea8bacc428792fbda139aeca48a385fd8",
+        "0x29a09c5cbc3fc0404806b3b9df2cc888c11025d2413e26bdc57b9c661017f458",
+        "0x597326fba961248650a17b2e0ac3d41a10ad15525d8b69311e9efdabe3412445",
+        "0x18eac5c3470615d523d1858ba477f3af5ddf8ec516423bb83c33832f0263afea",
+        "0xc336b1da2bc3abb2069e2576aa647b2931e61daf7c68a5d6e01cb7410cbc5a88",
+        "0xeb8e33c7c3412e92eaec513b0605479296b8c7f4ba8d4d57c40fe71bd1009615",
+        "0x6b5b3be3cfdacbe766a28d1a5808e5db267a7c9fe32264036a0b363c7d7bd704",
+        "0xdad288ab0fc6113bd0297f220935bc04b38b54a3db66e0d259704c546be83618",
+        "0xf0b5bf34661a71df658580c82befb090019b187e4d8fe93929c25cdffa729abb",
+        "0x84fa2f60bfb2be8237bbcd89b7f5596530553e9a616e633a09b908cf389bea4d",
+        "0x1ca45bfa1c0fa748e8f2d78377aae62a384ba0fedab8bf304b5ce508eecffe16",
+        "0x4fadc172848ba7547ec1a7a963f9a4ee884ca11c5f5f12ffcfdb37f993dfbe88"
+      ]
     }
   }
 }

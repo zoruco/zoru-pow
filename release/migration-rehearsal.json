@@ -10,25 +10,20 @@
   "historicalUnclaimedProofsPaid": 22,
   "historicalUnclaimedBaseUnitsPaid": 6000000000,
   "interruptedMigrationResumed": true,
+  "temporaryMigrationSlotsCleared": true,
   "proxyAddresses": {
     "ledger": "0xff53a9079c2853c39c5adbfca788cb0f12acff03",
     "engine": "0x9ed52c07691cd26758ed1ebe05d86698a9e54e8c",
     "beacon": "0x562249b5c3922fafa31f350efdb89e4f3f9a82fe"
   },
-  "transactions": 837,
+  "transactions": 838,
   "scope": "Local Anvil mainnet-state fork; no production key and no production transaction",
   "batchSize": 32,
   "gasByOperation": {
-    "other": 14065018,
+    "other": 14260631,
     "proofs": 361336504,
     "epochs": 417360527,
     "beacon": 55175007
-  },
-  "maximumGasPerTransaction": {
-    "other": 2759599,
-    "proofs": 1171567,
-    "epochs": 2919675,
-    "beacon": 333384
   },
   "originalNativeLedgerRows": 48184
 }
