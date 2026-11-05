@@ -11,7 +11,7 @@ StateDirectory=zoru-mainnet-monitor
 StateDirectoryMode=0700
 Environment=PATH=/opt/zoru-mainnet/tools:/usr/bin:/bin
 Environment=PYTHONDONTWRITEBYTECODE=1
-ExecStart=/usr/bin/python3 /opt/zoru-mainnet/tools/monitor_mainnet.py --manifest /opt/zoru-mainnet/release/deployment.json --state /var/lib/zoru-mainnet-monitor --rpc https://vexascan.com/rpc --native https://vexascan.com:8443
+ExecStart=/usr/bin/python3 /opt/zoru-mainnet/tools/monitor_mainnet.py --manifest /opt/zoru-mainnet/release/deployment.json --state /var/lib/zoru-mainnet-monitor --rpc https://vexascan.com/rpc --native https://vexascan.com:8443 --relay-account miner.wind
 CPUQuota=10%
 MemoryMax=128M
 TimeoutStartSec=90

@@ -31,6 +31,11 @@ def sample(args):
     head=datetime.datetime.fromisoformat(info['head_block_time'].rstrip('Z')).replace(tzinfo=datetime.timezone.utc)
     require(abs(time.time()-head.timestamp())<120,'Native chain head is stale')
     account=native_call('get_account',{'account_name':'vex.evm'})
+    relay_cpu=None
+    if args.relay_account:
+        relay=native_call('get_account',{'account_name':args.relay_account})
+        relay_cpu={key:relay['cpu_limit'][key] for key in ['used','available','max']}
+        require(all(type(value) is int for value in relay_cpu.values()),'Invalid relay CPU readings')
     block=rpc.call('eth_blockNumber',[])
     functions=['totalProofs','emissionIndex','allocatedSupply','fundedSupply','paidSupply','admissionPaused','claimsPaused']
     calls=[('eth_call',[{'to':manifest['ledger'],'data':selector(name+'()')},block]) for name in functions]
@@ -63,6 +68,11 @@ def sample(args):
     if remaining is not None and remaining<7*86400:alerts.append('Native RAM has less than seven days at the measured growth rate')
     critical=free<16384 or (remaining is not None and remaining<86400)
     if critical:alerts.append('Native capacity requires immediate attention')
+    if relay_cpu is not None and relay_cpu['available']<2_000_000:
+        alerts.append('Relay CPU has less than two seconds available')
+        if relay_cpu['available']<200_000:
+            critical=True
+            alerts.append('Relay CPU requires immediate attention')
     if info['head_block_num']-info['last_irreversible_block_num']>600:alerts.append('Native finality is lagging')
     paused=bool(accounting['admissionPaused'] or accounting['claimsPaused'])
     output={'schema':'zoru-mainnet-health-1','status':'CRITICAL' if critical else ('WARNING' if alerts else ('MAINTENANCE' if paused else 'HEALTHY')),
@@ -70,7 +80,8 @@ def sample(args):
         'nativeIrreversible':info['last_irreversible_block_num'],'ramUsage':record['ramUsage'],
         'ramQuota':record['ramQuota'],'ramFree':free,'measuredRamBytesPerSecond':growth,
         'estimatedRamDaysRemaining':remaining/86400 if remaining is not None else None,
-        'accounting':accounting,'ledgerBalance':balance,'protocolPaused':paused,'alerts':alerts,'transactionsSent':0}
+        'accounting':accounting,'ledgerBalance':balance,'protocolPaused':paused,'relayCpu':relay_cpu,
+        'alerts':alerts,'transactionsSent':0}
     atomic_json(history_path,history)
     atomic_json(args.state/'health.json',output)
     return output
@@ -80,6 +91,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ['manifest','state']:parser.add_argument('--'+name,type=Path,required=True)
     for name in ['rpc','native']:parser.add_argument('--'+name,required=True)
+    parser.add_argument('--relay-account')
     args=parser.parse_args()
     args.state.mkdir(mode=0o700,parents=True,exist_ok=True)
     try:

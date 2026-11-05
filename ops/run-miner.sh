@@ -8,7 +8,7 @@ test -r "$wallet" && test -r "$password_file"
 exec /opt/zoru-mainnet/bin/zoru-miner-cli mine \
   --manifest /opt/zoru-mainnet/release/deployment.json \
   --read https://vexascan.com/rpc \
-  --submit https://vexascan.com/rpc \
+  --submit https://api.windcrypto.com/rpc \
   --native https://vexascan.com:8443 \
   --wallet "$wallet" --password-stdin \
   --expected-wallet "$ZORU_MINER_ACCOUNT" \
