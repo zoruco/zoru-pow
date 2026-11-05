@@ -9151,5 +9151,189 @@
         "0x4fadc172848ba7547ec1a7a963f9a4ee884ca11c5f5f12ffcfdb37f993dfbe88"
       ]
     }
+  },
+  "beaconRecovery": {
+    "status": "PASS",
+    "chainId": 46736,
+    "mainnetTouched": false,
+    "sourceCommit": "10bd5463bef6d3f47079f4de9e7e534fd2b7a011",
+    "testedBinarySha256": "264b482c6e46df96012cbd6df1989ec8ea051a12337041a158594fe460dfe32e",
+    "testedBinaryVersion": "1.5.5",
+    "scope": "Same beacon scheduling code subsequently packaged as 1.5.6; real authenticated drand and Keccak mining on isolated VEX",
+    "faults": {
+      "outageSeconds": 75,
+      "preflightDelaySeconds": 3,
+      "failedPreflights": 16
+    },
+    "elapsedSeconds": 245.38822452,
+    "accepted": 15,
+    "autoClaimed": 7,
+    "epochs": 3,
+    "rpcRequests": 2023,
+    "rpcRequestsPerAcceptedIncludingOutage": 134.86666666666667,
+    "processCpuSeconds": 43.83353699999999,
+    "peakRssBytes": 11534336,
+    "intentionalOutageErrors": [
+      {
+        "message": "Scheduled drand round is unavailable or invalid"
+      },
+      {
+        "message": "Scheduled drand round is unavailable or invalid"
+      },
+      {
+        "message": "Scheduled drand round is unavailable or invalid"
+      },
+      {
+        "message": "Scheduled drand round is unavailable or invalid"
+      },
+      {
+        "message": "Scheduled drand round is unavailable or invalid"
+      },
+      {
+        "message": "Scheduled drand round is unavailable or invalid"
+      }
+    ],
+    "proofs": [
+      {
+        "candidateToReceiptSeconds": 4.725848635,
+        "digest": "0x0000d26a0f3e335e0f0ce2dd27944639a78b8c8a4383c9e1aa73f4f6a7d20d27",
+        "epoch": 984,
+        "gasUsed": 324659,
+        "generation": "1",
+        "hash": "0xbba55fa438b3f468c5a4b1f2f39d305640432ec9ce0422c6f4e2a7c5a8dc505b"
+      },
+      {
+        "candidateToReceiptSeconds": 4.786404623,
+        "digest": "0x0000b301a188fdcb6d2ed9d2ba49e368b244a35eed07621bd7b5f00c31100bc2",
+        "epoch": 984,
+        "gasUsed": 135276,
+        "generation": "1",
+        "hash": "0xbff1e917cde447c3c854360cf1600b036d1370e6220df4216290add64ace7696"
+      },
+      {
+        "candidateToReceiptSeconds": 4.779194764,
+        "digest": "0x0000d3fa1d7040fdc7487eca207f16585272e825812a93a33921c703cc9ec96c",
+        "epoch": 984,
+        "gasUsed": 135276,
+        "generation": "1",
+        "hash": "0x739395b943fc3406253274ca56df6fc6f15ed3c2011f9fd9d27097546005dc06"
+      },
+      {
+        "candidateToReceiptSeconds": 5.020082315,
+        "digest": "0x0000ada137da653b48cf7606b8dcf4e03e8edf3ca9f1260ed792a8bb24c9265a",
+        "epoch": 984,
+        "gasUsed": 135276,
+        "generation": "1",
+        "hash": "0xe6ffdb30b1b8d7865e8c903272d8a1b6c1cdaa7c0715429937b9f196b2eeaf3d"
+      },
+      {
+        "candidateToReceiptSeconds": 5.065143653,
+        "digest": "0x000012c6ad66d02f9766f4e9834cee316d6b93d3e3def78ae604f837cf24a4c4",
+        "epoch": 984,
+        "gasUsed": 135276,
+        "generation": "1",
+        "hash": "0xd1273d2514b0b8b10e5963b74a8974c8895c46ab1c84ff25cb6a3ca73cd44c86"
+      },
+      {
+        "candidateToReceiptSeconds": 5.97238217,
+        "digest": "0x00007b845a84ff68cbb5332f274331b17147a1e822bfe30cb40024436828ae4d",
+        "epoch": 984,
+        "gasUsed": 135276,
+        "generation": "1",
+        "hash": "0x007c3a5adeae8bc2dcdd51670b52d4cbec367d5bffdb52da913e79ebc5763756"
+      },
+      {
+        "candidateToReceiptSeconds": 5.030602445,
+        "digest": "0x0000630fea5c28b452a19293880b97e5d04a06a24f93a1d0838fad0429cdbe66",
+        "epoch": 985,
+        "gasUsed": 324720,
+        "generation": "1",
+        "hash": "0x1f59c75436c3ff2902cc784d853e1f121f14df28af4676b653ae7f261bf07d09"
+      },
+      {
+        "candidateToReceiptSeconds": 5.075441669,
+        "digest": "0x00001a2b5b2923b2dbc7dee6475c42e8e1353767236c9709fc87d7de77f2ba59",
+        "epoch": 985,
+        "gasUsed": 135276,
+        "generation": "1",
+        "hash": "0x62663b11bdc2bfce6f5f86a2e93c572634d78df7e431850363000b36df9b92a6"
+      },
+      {
+        "candidateToReceiptSeconds": 6.066660075,
+        "digest": "0x00003ba0c97480acc7f4fbc838df87805c81b5ad6d3981a249b8b2324196b322",
+        "epoch": 985,
+        "gasUsed": 135276,
+        "generation": "1",
+        "hash": "0x13ec1db744372a369ee5bfe57948e9d3135c0ca368266f43f34b8f3614c986b7"
+      },
+      {
+        "candidateToReceiptSeconds": 5.634578423,
+        "digest": "0x00001d43140d1d510a56ac7d02a67983a75eaffe333c6a80969ccd23f0fb3d53",
+        "epoch": 985,
+        "gasUsed": 135276,
+        "generation": "1",
+        "hash": "0x382faf0a7eb96fc2451d9fc286f6b9eca3764f640d258f2e8a96d6395be862da"
+      },
+      {
+        "candidateToReceiptSeconds": 5.084979198,
+        "digest": "0x0000f46e0681293b4d598bd79da4c76dffe35327b4b0197c7df2ec766e73d58b",
+        "epoch": 985,
+        "gasUsed": 135276,
+        "generation": "1",
+        "hash": "0x4a92fad79c10f3c54ee43abad37a04e24f5e93ef4635acdaf4fa08cc148e9caf"
+      },
+      {
+        "candidateToReceiptSeconds": 5.574248764,
+        "digest": "0x0000078e971fbb36dd40d10f539c306332bf5e0001df232f59d0663d9024a2e9",
+        "epoch": 986,
+        "gasUsed": 324720,
+        "generation": "1",
+        "hash": "0xabd542f777f6eacc19dc01f4f5a210cef29ed30bdf2ecc5bec8c28ce4f2768ca"
+      },
+      {
+        "candidateToReceiptSeconds": 4.682473636,
+        "digest": "0x000092ccfaea695b38828b400127d591ea02f8d885101c9b03c8f09928e1c56b",
+        "epoch": 986,
+        "gasUsed": 135276,
+        "generation": "1",
+        "hash": "0x45725e46cb7fd5a94f28e49d7e135c9b266d502b7b3235d6e60d1642962d353b"
+      },
+      {
+        "candidateToReceiptSeconds": 5.181642589,
+        "digest": "0x0000bc01c4091ddf572b0f7ae47f1a50ef84e61c41184f015f75aabd9bba9e8a",
+        "epoch": 986,
+        "gasUsed": 135276,
+        "generation": "1",
+        "hash": "0x682be060082cf39782f0cfd1de62a4c73f034d43a5ee910837576507bf36a17c"
+      },
+      {
+        "candidateToReceiptSeconds": 4.828505545,
+        "digest": "0x00007d83d9c0106d0b18ae1b61ee9384e7c9423c74cc5165622762c8aa811cdc",
+        "epoch": 986,
+        "gasUsed": 135276,
+        "generation": "1",
+        "hash": "0x55503633c84840e127f471809e40eb02be77de1b2189d8902eb5ae03e56d4c5b"
+      }
+    ],
+    "beacons": [
+      {
+        "epoch": 984,
+        "round": "22104801",
+        "hash": "0x54693eb5ddfe0a3ad787ddf1f9971c0f747551fdd53082f977595c167087f674",
+        "randomness": "7257a1a2850281401f3ee3396798dedc9e6b6b02ad62a547f8871cc1191319f2"
+      },
+      {
+        "epoch": 985,
+        "round": "22104821",
+        "hash": "0xb3147fa6ac859cd93c284a00692bd0b6e231f0f505dfc4f8fcb7b1089f311ea5",
+        "randomness": "7c5e0908db184668a165f2f43768c59c52ec43bd20af015a8893fc8f6987374b"
+      },
+      {
+        "epoch": 986,
+        "round": "22104841",
+        "hash": "0x1ad36a7d96e9e6413bfe4c9e7dee8753de8a6da5316a34d2498a242f0c620a24",
+        "randomness": "bfff516320088f25066e05a56645d2e20f6f39eb4f3a4c2ca6bebc3d2c25d4e0"
+      }
+    ]
   }
 }
