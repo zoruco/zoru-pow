@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "sourceCommit": "ee1e2214da5bb13043d7e8f3409cfc38dc3a8502",
+  "suiteRevision": 6,
+  "ledgerProxy": "0xff53a9079c2853c39c5adbfca788cb0f12acff03",
+  "ledgerImplementation": "0x084d071716255d55fd9962b8f82f62f043f5796f",
+  "rolloverGraceSeconds": 30,
+  "manifestSha256": "5986f236e897bd95b55d23ffb59a1a6c35ae668e296c7c9b6be68594e0e14cf7",
+  "transactions": [
+    {
+      "label": "activate-continuous-ledger",
+      "transactionHash": "0xacfbc1fb9b7a628cf9d0eb8427de7d1c183031b9d1e37016183e1b0688819a96",
+      "blockNumber": "0xb6d88e",
+      "blockHash": "0xd5498ba3ac2c963ea2e3cb6fea1541d7b2dd8d86fa1b5ba7908c7e2eaa3ccc00",
+      "gasUsed": "0x5a48a",
+      "effectiveGasPrice": "0x22ecb25c00",
+      "status": "0x1",
+      "contractAddress": null,
+      "nativeReceiptBarrier": 432706469,
+      "nativeIrreversibleAt": 432706470
+    },
+    {
+      "label": "deploy-continuous-ledger",
+      "transactionHash": "0x187b78cdfa56459a7d5087707b3e30fc0c3f8ed707ece7b87f6dd0e6bf2894ae",
+      "blockNumber": "0xb6d84e",
+      "blockHash": "0x4a6fd081bdb421be45231c364ae1208cea37e911c8df71c370fda0e53a164b1b",
+      "gasUsed": "0x1dc128",
+      "effectiveGasPrice": "0x22ecb25c00",
+      "status": "0x1",
+      "contractAddress": "0x084d071716255d55fd9962b8f82f62f043f5796f",
+      "nativeReceiptBarrier": 432706340,
+      "nativeIrreversibleAt": 432706340
+    },
+    {
+      "label": "schedule-continuous-ledger",
+      "transactionHash": "0x3096247722ae2d62413984ae79bae3bcc465df77126db2b68702acebba245c03",
+      "blockNumber": "0xb6d855",
+      "blockHash": "0xb09329b647463a803af273484cd1bbcb73d7275af4b808351732376a0c05615f",
+      "gasUsed": "0x1ec57",
+      "effectiveGasPrice": "0x22ecb25c00",
+      "status": "0x1",
+      "contractAddress": null,
+      "nativeReceiptBarrier": 432706353,
+      "nativeIrreversibleAt": 432706354
+    }
+  ]
+}
