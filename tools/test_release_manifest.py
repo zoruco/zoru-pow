@@ -81,7 +81,7 @@ class DeploymentAttestationTest(unittest.TestCase):
 
             def call(self, target, signature):
                 r = fixture.roles
-                values = {(r['ledger'], 'token()'): r['token'], (r['ledger'], 'engine()'): r['engine'],
+                values = {(r['ledger'], 'ROLLOVER_GRACE_SECONDS()'): hex(30), (r['ledger'], 'token()'): r['token'], (r['ledger'], 'engine()'): r['engine'],
                           (r['ledger'], 'beacon()'): r['beacon'], (r['ledger'], 'protocolAdmin()'): r['admin'],
                           (r['token'], 'issuer()'): r['ledger'], (r['token'], 'owner()'): fixture.owner,
                           (r['token'], 'MAX_SUPPLY()'): hex(21_000_000 * 10**8), (r['token'], 'decimals()'): hex(8),

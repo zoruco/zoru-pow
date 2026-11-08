@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "protocol": "continuous-work-1",
+  "baseCommit": "75a63bd0c0a0fe836c732e54e44d0cf14d33f628",
+  "compiler": "0.8.38",
+  "ledgerRuntimeSha256": "f4594de8bed360a92a05189ce659681c9cdf3f4a9009144293a08635d6c92b2a",
+  "solidity": {
+    "passed": 153,
+    "failed": 0
+  },
+  "storage": {
+    "status": "PASS",
+    "validator": "@openzeppelin/upgrades-core",
+    "version": "1.47.0",
+    "compiler": "0.8.38",
+    "baselineCommit": "75a63bd0c0a0fe836c732e54e44d0cf14d33f628",
+    "unsafeOverrides": [],
+    "comparisons": [
+      "deployed ZoruLedger -> candidate ZoruLedger",
+      "deployed ZoruDrandBeacon -> candidate ZoruDrandBeacon"
+    ]
+  },
+  "mainnetFork": {
+    "status": "PASS",
+    "block": 11980701,
+    "digest": "0x0000e194bfcfe5c9ded9769bccbf2c2508d29a3c2fc351c728967cdcd19bac86",
+    "epoch": 14297,
+    "beneficiary": "0xb5a3a38b935b3d4b2361c2c191b3103cb9684862"
+  },
+  "rust": {
+    "libraryPassed": 64,
+    "cliPassed": 18,
+    "clippy": "PASS",
+    "signedRecovery": "PASS",
+    "acceptedLimit": "PASS",
+    "autoClaim": "PASS",
+    "claimReorg": "PASS",
+    "outageAndFrozenHead": "PASS",
+    "delayedSeedFirstProof": "PASS"
+  },
+  "gui": {
+    "groupsPassed": 4,
+    "signedIntegration": "PASS"
+  },
+  "packaging": "PASS",
+  "workflows": false
+}

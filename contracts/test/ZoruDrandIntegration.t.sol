@@ -93,7 +93,10 @@ contract ZoruDrandIntegrationTest {
         require(!forged && beacon.verifiedSeed(0) == bytes32(0), "forgery must not create seed");
         vm.expectRevert(ZoruLedger.InvalidProof.selector);
         ledger.submit(0, address(0xA11CE), 0);
-        require(ledger.allocatedSupply() == 0 && ledger.totalProofs() == 0 && token.totalSupply() == 0, "failed authentication cannot allocate reward");
+        require(
+            ledger.allocatedSupply() == 0 && ledger.totalProofs() == 0 && token.totalSupply() == 0,
+            "failed authentication cannot allocate reward"
+        );
         beacon.publish(0, SIG);
         address beneficiary = address(0xA11CE);
         uint256 nonce = 0;
@@ -128,6 +131,9 @@ contract ZoruDrandIntegrationTest {
         require(uint256(digest) < ledger.MAX_TARGET(), "actual proof");
         require(ledger.epochInfo(0).proofCount == 1, "admitted");
         vm.warp(LAUNCH + 61);
+        vm.expectRevert(ZoruLedger.EpochNotClosed.selector);
+        ledger.seal(0);
+        vm.warp(LAUNCH + 90);
         ledger.seal(0);
         require(ledger.claim(digest) == 5 * 1e8, "real proof paid");
         require(token.balanceOf(beneficiary) == 5 * 1e8, "beneficiary paid");

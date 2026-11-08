@@ -71,7 +71,7 @@ contract ZoruCacheSuiteRecoveryTest {
         bytes32 stable = addresses();
         publish(0);
         bytes32 paidProof = ledger.submit(0, ALICE, 1);
-        vm.warp(START + 60);
+        vm.warp(START + 90);
         ledger.seal(0);
         require(ledger.claim(paidProof) == 5e8, "prior epoch fully paid");
         bytes32 authentic = publish(1);
@@ -96,7 +96,7 @@ contract ZoruCacheSuiteRecoveryTest {
         require(fresh != previousDigest && ledger.epochInfo(1).generation == 3, "stale work domain retired");
         require(addresses() == stable, "all public addresses and issuer stay fixed");
 
-        vm.warp(START + 120);
+        vm.warp(START + 150);
         ledger.seal(1);
         require(ledger.claim(pendingProof) + ledger.claim(fresh) == 5e8, "pending accepted work preserved");
         (ok,) = address(ledger).call(abi.encodeCall(ZoruLedger.claim, (paidProof)));
@@ -221,7 +221,7 @@ contract ZoruCacheSuiteRecoveryTest {
         (, bytes memory authenticSignature,,) = CryptoOracleVectors.roundVector(0);
         require(beacon.publish(0, authenticSignature) == original,
             "authentic republication resumes work");
-        vm.warp(START + 60);
+        vm.warp(START + 90);
         ledger.seal(0);
         require(ledger.claim(proof) == 5e8, "prior accepted proof remains claimable");
     }

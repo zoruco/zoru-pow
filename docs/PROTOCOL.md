@@ -21,6 +21,8 @@ Generation and nonce are full uint256 values; epoch is uint48. The Keccak digest
 
 Anybody may publish the scheduled drand evmnet signature for the current epoch. The Beacon verifies its BN254 BLS signature and binds the rolling cache to the verification configuration, active Beacon implementation and coordinated suite revision. On a suite upgrade, old cached randomness is automatically treated as untrusted. Fresh mining may require republication of the authentic drand signature. Historical seeds remain in the Ledger and events. RPC and drand availability remain dependencies. The network chain hash, trusted key, round schedule and domain separator must be reviewed together.
 
+The Ledger supplies one atomic mining context through `miningWork()`. An eligible preceding-epoch job can remain admissible for up to 30 seconds while the next authenticated seed is missing. The next verified seed ends this transition and freezes the preceding proof count before the new target is used. See [Continuous mining work](CONTINUOUS_WORK.md).
+
 ## Epochs and rewards
 
 The initial epoch lasts 60 seconds and targets approximately 60 accepted proofs. Difficulty uses accepted work and elapsed epochs, with bounded changes and an explicit easiest target. It cannot measure every miner's unsubmitted work.

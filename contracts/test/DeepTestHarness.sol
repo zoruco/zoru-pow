@@ -45,3 +45,26 @@ contract DeepTestGasLoop {
         assembly { for {} 1 {} {} }
     }
 }
+
+/// @notice TEST ONLY: a scheduled seed becomes visible after twenty seconds.
+/// This models the authenticated publication delay without using any real keys.
+contract DeepTestDelayedBeacon is Initializable {
+    uint256 public launchTime;
+
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(uint256 launch) external initializer {
+        launchTime = launch;
+    }
+
+    function releaseTime(uint48 epoch) external view returns (uint256) {
+        return launchTime + uint256(epoch) * 60;
+    }
+
+    function verifiedSeed(uint48 epoch) external view returns (bytes32) {
+        if (block.timestamp < launchTime + uint256(epoch) * 60 + 20) return bytes32(0);
+        return keccak256(abi.encode("DELAYED_TEST_ONLY_NOT_RANDOM", epoch));
+    }
+}

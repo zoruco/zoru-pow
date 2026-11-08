@@ -23,6 +23,7 @@ contract ZoruLedger is Initializable {
     uint256 public constant TERMINAL_DUST = 27_300_000;
     uint256 public constant EPOCH_SECONDS = 60;
     uint256 public constant DESIRED_PROOFS = 60;
+    uint256 public constant ROLLOVER_GRACE_SECONDS = 30;
     uint256 public constant MAX_TARGET = type(uint256).max >> 16;
     uint256 public constant MODULE_CALL_GAS = 100_000;
     bytes32 public constant PROOF_DOMAIN = keccak256("ZORU-FLOWPOW-PROOF-1");
@@ -87,9 +88,7 @@ contract ZoruLedger is Initializable {
     bool public claimsPaused;
     bool private entered;
 
-    /// @custom:oz-renamed-from epochs
     mapping(uint48 => Epoch) internal legacyEpochs;
-    /// @custom:oz-renamed-from proofs
     /// @dev Reserved at the original mapping slot. Only the temporary migration
     /// implementation accesses it; the final runtime uses compactProofs exclusively.
     mapping(bytes32 => AcceptedProof) internal legacyProofs;
@@ -183,6 +182,66 @@ contract ZoruLedger is Initializable {
         uint256 current = (block.timestamp - launchTime) / EPOCH_SECONDS;
         if (current > type(uint48).max) revert InvalidEpoch();
         return uint48(current);
+    }
+
+    struct MiningWork {
+        uint48 epoch;
+        uint256 closesAt;
+        bytes32 seed;
+        uint256 target;
+        uint256 generation;
+        bool needsBeacon;
+        bool active;
+    }
+
+    /// @notice One atomic context for mining and the pending beacon publication.
+    function miningWork() external view returns (MiningWork memory result) {
+        uint48 current = epochNow();
+        _checkWork(current);
+        bytes32 currentSeed = compactEpochs[current].seed;
+        if (currentSeed == bytes32(0)) currentSeed = beacon.verifiedSeed{gas: MODULE_CALL_GAS}(current);
+        result.needsBeacon = currentSeed == bytes32(0);
+        result.epoch =
+            current != 0 && result.needsBeacon && _rolloverEligible(current - 1, current) ? current - 1 : current;
+        PackedEpoch storage state = compactEpochs[result.epoch];
+        result.closesAt = state.closesAt;
+        if (result.closesAt == 0) {
+            result.closesAt = launchTime + (uint256(result.epoch) + 1) * EPOCH_SECONDS + ROLLOVER_GRACE_SECONDS;
+        }
+        result.generation = moduleGeneration;
+        result.seed = state.seed;
+        if (result.seed == bytes32(0)) {
+            result.seed =
+                result.epoch == current ? currentSeed : beacon.verifiedSeed{gas: MODULE_CALL_GAS}(result.epoch);
+        }
+        result.active = !admissionPaused && token.issuer() == address(this) && !state.isSealed
+            && state.proofCount < MAX_PROOFS_PER_EPOCH && (!hasOpened || result.epoch >= lastOpenedEpoch)
+            && (state.generation == 0 || state.generation == moduleGeneration) && block.timestamp < result.closesAt;
+        if (result.active) result.target = state.target != 0 ? state.target : _targetForNewEpoch(result.epoch);
+    }
+
+    function _rolloverEligible(uint48 epoch, uint48 current) internal view returns (bool) {
+        if (current == 0 || epoch != current - 1 || (hasOpened && lastOpenedEpoch > epoch)) return false;
+        PackedEpoch storage state = compactEpochs[epoch];
+        uint256 closesAt = state.closesAt;
+        if (closesAt == 0) closesAt = launchTime + (uint256(epoch) + 1) * EPOCH_SECONDS + ROLLOVER_GRACE_SECONDS;
+        if (
+            state.isSealed || (state.generation != 0 && state.generation != moduleGeneration)
+                || block.timestamp >= closesAt
+        ) return false;
+        return state.seed != bytes32(0) || beacon.verifiedSeed{gas: MODULE_CALL_GAS}(epoch) != bytes32(0);
+    }
+
+    function _requireMiningEpoch(uint48 epoch) internal view {
+        uint48 current = epochNow();
+        // Use the clock epoch here: a previous-epoch proof must not bypass a
+        // scheduled upgrade's activation checkpoint.
+        _checkWork(current);
+        if (
+            epoch != current
+                && (!_rolloverEligible(epoch, current)
+                    || beacon.verifiedSeed{gas: MODULE_CALL_GAS}(current) != bytes32(0))
+        ) revert InvalidEpoch();
     }
 
     function budgetForIndex(uint256 index) public pure virtual returns (uint256) {
@@ -335,20 +394,25 @@ contract ZoruLedger is Initializable {
     }
 
     function targetForEpoch(uint48 epoch) external view returns (uint256) {
-        if (epoch != epochNow()) revert InvalidEpoch();
+        _requireMiningEpoch(epoch);
         if ((hasOpened && epoch < lastOpenedEpoch) || compactEpochs[epoch].isSealed) revert InvalidEpoch();
-        _checkWork(epoch);
         return compactEpochs[epoch].target == 0 ? _targetForNewEpoch(epoch) : compactEpochs[epoch].target;
     }
 
-    /// @notice Clock-only progress needs neither proof nor a working beacon.
+    /// @notice Clock-only recovery remains possible after the rollover window.
+    /// An unseeded next epoch cannot prematurely end live rollover work.
     function openEpoch(uint48 epoch) public virtual nonReentrant returns (uint256) {
         if (epoch != epochNow()) revert InvalidEpoch();
         return _openEpoch(epoch).target;
     }
 
     function _openEpoch(uint48 epoch) internal returns (PackedEpoch storage state) {
-        _checkWork(epoch);
+        _requireMiningEpoch(epoch);
+        uint48 current = epochNow();
+        if (
+            epoch == current && current != 0 && _rolloverEligible(current - 1, current)
+                && beacon.verifiedSeed{gas: MODULE_CALL_GAS}(current) == bytes32(0)
+        ) revert InvalidProof();
         if (hasOpened && epoch < lastOpenedEpoch) revert InvalidEpoch();
         state = compactEpochs[epoch];
         if (state.isSealed) revert InvalidEpoch();
@@ -356,7 +420,7 @@ contract ZoruLedger is Initializable {
         uint256 target = _targetForNewEpoch(epoch);
         state.target = target;
         state.generation = moduleGeneration.toUint64();
-        state.closesAt = (launchTime + (uint256(epoch) + 1) * EPOCH_SECONDS).toUint64();
+        state.closesAt = (launchTime + (uint256(epoch) + 1) * EPOCH_SECONDS + ROLLOVER_GRACE_SECONDS).toUint64();
         lastOpenedEpoch = epoch;
         hasOpened = true;
         emit EpochOpened(epoch, target, address(engine), address(beacon), state.generation);
@@ -387,7 +451,7 @@ contract ZoruLedger is Initializable {
     {
         if (admissionPaused) revert Paused();
         if (token.issuer() != address(this)) revert InactiveIssuer();
-        if (beneficiary == address(0) || epoch != epochNow()) revert InvalidEpoch();
+        if (beneficiary == address(0)) revert InvalidEpoch();
         PackedEpoch storage state = _openEpoch(epoch);
         bool first = state.proofCount == 0;
         if (state.seed == bytes32(0)) {
@@ -431,7 +495,16 @@ contract ZoruLedger is Initializable {
     /// @notice Independent of ongoing work in newer epochs. Caller funds gas.
     function seal(uint48 epoch) public virtual nonReentrant {
         PackedEpoch storage state = compactEpochs[epoch];
-        if (state.target == 0 || block.timestamp < state.closesAt) revert EpochNotClosed();
+        if (state.target == 0) revert EpochNotClosed();
+        if (block.timestamp < state.closesAt) {
+            uint256 nominalEnd = launchTime + (uint256(epoch) + 1) * EPOCH_SECONDS;
+            bool retired = state.generation != moduleGeneration || (hasOpened && lastOpenedEpoch > epoch)
+                || !IZoruUpgradeCoordinator(protocolAdmin).workActive(epoch + 1, moduleGeneration);
+            if (
+                state.closesAt != nominalEnd + ROLLOVER_GRACE_SECONDS || block.timestamp < nominalEnd
+                    || (!retired && beacon.verifiedSeed{gas: MODULE_CALL_GAS}(epoch + 1) == bytes32(0))
+            ) revert EpochNotClosed();
+        }
         if (state.proofCount == 0 || state.isSealed) revert AlreadySealed();
         uint256 available = freeBalance();
         uint256 deficit = available >= state.budget ? 0 : state.budget - available;

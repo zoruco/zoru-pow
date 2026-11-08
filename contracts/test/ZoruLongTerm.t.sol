@@ -44,14 +44,13 @@ contract ZoruLongTermTest is AdversarialFixture {
         require(token.balanceOf(address(ledger)) == 5e8, "other epoch remains backed");
         ledger.claim(other);
         require(token.balanceOf(BOB) == 5e8 && ledger.fundedLiability() == 0);
-
     }
 
     function testClockRewindCannotDelayAlreadyMatureBudget() public {
         vm.warp(START + 61);
         bytes32 digest = ledger.submit(1, ALICE, 104);
-        vm.warp(START + 121);
-        _retime(START + 121);
+        vm.warp(START + 151);
+        _retime(START + 151);
         ledger.seal(1);
         ledger.claim(digest);
         require(token.balanceOf(ALICE) == 5e8 && ledger.unfundedLiability() == 0);

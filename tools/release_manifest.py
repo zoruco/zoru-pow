@@ -160,6 +160,10 @@ def deployment(args, baseline):
     result = {**data, **roles, 'schema': 'zoru-mainnet-suite-1', 'decimals': 8, 'epochSeconds': 60,
               'drandChainHash': DRAND, 'buildManifestSha256': sha((ROOT/'release/build-manifest.json').read_bytes()),
               'sourceSha256': baseline['sourceSha256'], 'runtimeCodeHashes': {}, 'approvedImplementationCodeHashes': {}, 'implementations': {}}
+    grace = int(rpc.call(roles['ledger'], 'ROLLOVER_GRACE_SECONDS()'), 16)
+    if grace != 30:
+        raise ValueError('Unsupported continuous mining rollover policy')
+    result['rolloverGraceSeconds'] = grace
     height = data['deploymentBlockNumber']
     result['deploymentBlockNumber'] = hex(height) if isinstance(height, int) else height
     for role, address in roles.items():

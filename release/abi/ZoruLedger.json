@@ -149,6 +149,19 @@
   },
   {
     "type": "function",
+    "name": "ROLLOVER_GRACE_SECONDS",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "TERMINAL_DUST",
     "inputs": [],
     "outputs": [
@@ -540,6 +553,56 @@
         "name": "",
         "type": "uint256",
         "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "miningWork",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "result",
+        "type": "tuple",
+        "internalType": "struct ZoruLedger.MiningWork",
+        "components": [
+          {
+            "name": "epoch",
+            "type": "uint48",
+            "internalType": "uint48"
+          },
+          {
+            "name": "closesAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "seed",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "target",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "generation",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "needsBeacon",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "active",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
       }
     ],
     "stateMutability": "view"
