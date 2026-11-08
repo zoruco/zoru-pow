@@ -35,7 +35,10 @@ def sample(args):
     if args.relay_account:
         relay=native_call('get_account',{'account_name':args.relay_account})
         relay_cpu={key:relay['cpu_limit'][key] for key in ['used','available','max']}
-        require(all(type(value) is int for value in relay_cpu.values()),'Invalid relay CPU readings')
+        require(all((type(value) is int and value >= 0) or
+                    (type(value) is str and value.isascii() and value.isdecimal())
+                    for value in relay_cpu.values()),'Invalid relay CPU readings')
+        relay_cpu={key:int(value) for key,value in relay_cpu.items()}
     block=rpc.call('eth_blockNumber',[])
     functions=['totalProofs','emissionIndex','allocatedSupply','fundedSupply','paidSupply','admissionPaused','claimsPaused']
     calls=[('eth_call',[{'to':manifest['ledger'],'data':selector(name+'()')},block]) for name in functions]
